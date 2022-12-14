@@ -1,0 +1,7 @@
+#ifndef RESOLUTION_H
+#define RESOLUTION_H
+
+#define RESOLUTION_WIDTH 480
+#define RESOLUTION_HEIGHT 640
+
+#endif
