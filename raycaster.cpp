@@ -18,8 +18,10 @@ wall** raycaster::castRays(player* player, map* map)
     wall** walls = new wall*[RESOLUTION_WIDTH];
 
     float angle = fixAngleOverflow(
-        *player->getLookingDirection() - (70 / 2)
+        *player->getLookingDirection() - (FOV / 2)
     );
+
+    float distanceToPlane = floor((RESOLUTION_WIDTH / 2) / tan(getRadians(FOV / 2)));
 
     for (int i = 0; i < RESOLUTION_WIDTH; i++) {
         float verticalHitX = -1,
@@ -32,19 +34,15 @@ wall** raycaster::castRays(player* player, map* map)
         if (raycaster::getLookingHorizontalOrientation(angle) == UP) {
             float *hit = sonarUp(player, map, angle);
 
-            if (hit[0] > 0) {
-                horizontalHitX = hit[0];
-                horizontalHitY = hit[1];
-            }
+            horizontalHitX = hit[0];
+            horizontalHitY = hit[1];
 
             delete hit;
         } else {
             float *hit = sonarDown(player, map, angle);
 
-            if (hit[0] > 0) {
-                horizontalHitX = hit[0];
-                horizontalHitY = hit[1];
-            }
+            horizontalHitX = hit[0];
+            horizontalHitY = hit[1];
 
             delete hit;
         }
@@ -52,19 +50,15 @@ wall** raycaster::castRays(player* player, map* map)
         if (raycaster::getLookingVerticalOrientation(angle) == RIGHT) {
             float *hit = sonarRight(player, map, angle);
 
-            if (hit[0] > 0) {
-                verticalHitX = hit[0];
-                verticalHitY = hit[1];
-            }
+            verticalHitX = hit[0];
+            verticalHitY = hit[1];
 
             delete hit;
         } else {
             float *hit = sonarLeft(player, map, angle);
 
-            if (hit[0] > 0) {
-                verticalHitX = hit[0];
-                verticalHitY = hit[1];
-            }
+            verticalHitX = hit[0];
+            verticalHitY = hit[1];
 
             delete hit;
         }
@@ -80,41 +74,43 @@ wall** raycaster::castRays(player* player, map* map)
             horizontalDistance--;
         }
 
-        int rayAngle = fixAngleOverflow(*player->getLookingDirection() - angle);
+        int rayAngle = fixAngleOverflow(*player->getLookingDirection() - (int)angle);
 
         if ((horizontalDistance < verticalDistance || verticalHitX == -1) && horizontalHitX != -1) {
-            if (i == 1) {
-                glColor3f(1, 1, 0);
-                glBegin(GL_LINES);
-                glVertex2i(*player->getX(), *player->getY());
-                glVertex2i(horizontalHitX, horizontalHitY);
-                glEnd();
-            }
+
+            /*glColor3f(1, 1, 0);
+            glLineWidth(1);
+            glBegin(GL_LINES);
+            glVertex2i(*player->getX(), *player->getY());
+            glVertex2i(horizontalHitX, horizontalHitY);
+            glEnd();*/
 
             float tileOffset = horizontalHitX / TILE_SIZE;
 
             // Correct the horizontal fishbowl effect.
-            horizontalDistance = horizontalDistance * cos(degreesToRadians(rayAngle));
+            horizontalDistance = horizontalDistance * cos(getRadians(rayAngle));
 
             walls[i] = new wall(i, horizontalHitX, horizontalHitY, tileOffset, horizontalDistance, false);
         } else {
-            if (i == 1) {
-                glColor3f(0,1,0);
-                glBegin(GL_LINES);
-                glVertex2i(*player->getX(), *player->getY());
-                glVertex2i(verticalHitX, verticalHitY);
-                glEnd();
-            }
+            /*glColor3f(0,1,0);
+            glLineWidth(1);
+            glBegin(GL_LINES);
+
+            glVertex2i(*player->getX(), *player->getY());
+            glVertex2i(verticalHitX, verticalHitY);
+            glEnd();*/
 
             float tileOffset = verticalHitY / TILE_SIZE;
 
             // Correct the vertical fishbowl effect.
-            verticalDistance = verticalDistance * cos(degreesToRadians(rayAngle));
+            verticalDistance = verticalDistance * cos(getRadians(rayAngle));
 
             walls[i] = new wall(i, verticalHitX, verticalHitY, tileOffset, verticalDistance, true);
         }
 
-        angle += (70.0 / RESOLUTION_WIDTH);
+        angle =
+                -(atan2(RESOLUTION_WIDTH / 2 - (i - 0.5), distanceToPlane)) * (180.f / M_PI) +
+                *player->getLookingDirection();
     }
 
     return walls;
@@ -130,7 +126,7 @@ float* raycaster::sonarRight(player* player, map* map, float angle)
 
         nextTile = nextTile + (TILE_SIZE * i);
 
-        float tanValue = tan(degreesToRadians(angle));
+        float tanValue = tan(getRadians(angle));
 
         int x = (playerIsOnColumn * TILE_SIZE) + (i * TILE_SIZE);
         int y = ((*player->getY()) + (nextTile * tanValue));
@@ -159,7 +155,7 @@ float* raycaster::sonarLeft(player* player, map* map, float angle)
 
         previousTile = previousTile - (TILE_SIZE * i);
 
-        float tanValue = tan(degreesToRadians(angle));
+        float tanValue = tan(getRadians(angle));
 
         int x = (playerIsOnColumn * TILE_SIZE) - (i * TILE_SIZE);
         int y = ((*player->getY()) + (previousTile * tanValue));
@@ -188,7 +184,7 @@ float* raycaster::sonarUp(player* player, map* map, float angle)
 
         previousTile = previousTile - (TILE_SIZE * i);
 
-        float tanValue = -1 / tan(degreesToRadians(angle));
+        float tanValue = -1 / tan(getRadians(angle));
 
         float x = ((*player->getX()) - (previousTile * tanValue));
         float y = (playerOnRow * TILE_SIZE) - (i * TILE_SIZE);
@@ -217,7 +213,7 @@ float* raycaster::sonarDown(player* player, map* map, float angle)
 
         previousTile = previousTile + (TILE_SIZE * i);
 
-        float tanValue = -1 / tan(degreesToRadians(angle));
+        float tanValue = -1 / tan(getRadians(angle));
 
         float x = ((*player->getX()) - (previousTile * tanValue));
         float y = ((playerOnRow + 1) * TILE_SIZE) + (i * TILE_SIZE);
@@ -259,7 +255,7 @@ float raycaster::calculateRayDistance(int playerX, int playerY, float rayHitX, f
     return sqrt(pow(playerX - rayHitX, 2) + pow(playerY - rayHitY, 2));
 }
 
-float raycaster::degreesToRadians(float degrees)
+float raycaster::getRadians(float degrees)
 {
     return degrees * M_PI / 180.0;
 }

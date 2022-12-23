@@ -14,7 +14,7 @@ private:
     float* sonarUp(player *player, map *map, float angle);
     float* sonarDown(player *player, map *map, float angle);
     float calculateRayDistance(int playerX, int playerY, float rayHitX, float rayHitY);
-    float degreesToRadians(float degrees);
+    float getRadians(float degrees);
     float fixAngleOverflow(float angle);
 
 public:

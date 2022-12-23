@@ -2,6 +2,7 @@
 #define RESOLUTION_H
 
 #define RESOLUTION_WIDTH 480
+#define FOV 70
 
 #define PAINT_SIZE 2
 
