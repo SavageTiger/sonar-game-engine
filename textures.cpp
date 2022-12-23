@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <SOIL/SOIL.h>
 #include "textures.h"
+#include <cstdio>
 
 void textures::loadTexture(int textureId)
 {
@@ -13,8 +14,8 @@ void textures::loadTexture(int textureId)
         GL_TEXTURE_2D,
         0,
         GL_RGB,
-        textureWidth,
-        textureHeight,
+        64,
+        64,
         0,
         GL_RGB,
         GL_UNSIGNED_BYTE,
@@ -31,52 +32,53 @@ int textures::getTextureRFromXandY(int textureId, int x, int y)
 {
     this->loadTextureFromDisk(textureId);
 
-    return textureMemory[textureId][(y * textureWidth + x) * 3 + 0];
+    return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 0];
 }
 
 int textures::getTextureGFromXandY(int textureId, int x, int y)
 {
     this->loadTextureFromDisk(textureId);
 
-    return textureMemory[textureId][(y * textureWidth + x) * 3 + 1];
+    return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 1];
 }
 
 int textures::getTextureBFromXandY(int textureId, int x, int y)
 {
     this->loadTextureFromDisk(textureId);
 
-    return textureMemory[textureId][(y * textureWidth + x) * 3 + 2];
+    return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 2];
 }
 
-int textures::getMapRFromXandY(int x, int y)
+int textures::getTextureHeight(int textureId)
 {
-    return 0;
+    this->loadTextureFromDisk(textureId);
+
+    return textureHeight[textureId];
 }
 
-int textures::getMapGFromXandY(int x, int y)
+int textures::getTextureWidth(int textureId)
 {
-    return 0;
-}
+    this->loadTextureFromDisk(textureId);
 
-int textures::getMapBFromXandY(int x, int y)
-{
-    return 0;
+    return textureWidth[textureId];
 }
 
 void textures::loadTextureFromDisk(int textureId)
 {
-    GLuint texture;
-
-    char* textures [3] = {
-        "maps/box.png",
-        "maps/ceiling.png",
-        "maps/floor.png"
-    };
-
     if (textureMemory[textureId] == nullptr) {
-        textureMemory[textureId] = SOIL_load_image(textures[textureId], &textureHeight, &textureWidth, 0, SOIL_LOAD_RGB);
+        char* textures [4] = {
+            "maps/box.png",
+            "maps/ceiling.png",
+            "maps/floor.png",
+            "sprites/gun.png"
+        };
 
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glGenTextures(1, &texture);
+        textureMemory[textureId] = SOIL_load_image(
+            textures[textureId],
+            &textureHeight[textureId],
+            &textureWidth[textureId],
+            0,
+            SOIL_LOAD_RGB
+        );
     }
 }
