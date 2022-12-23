@@ -21,7 +21,7 @@ wall::wall(int pColumnOffset, float pHitOnMapX, float pHitOnMapY, float pTileOff
 void wall::render(textures* textures) {
     float textureStep = 64.0 / (float) this->wallHeight;
 
-    glPointSize(2);
+    glPointSize(PAINT_SIZE);
     glBegin(GL_POINTS);
 
     for (int i = 0; i < this->wallHeight; i++) {
@@ -36,7 +36,7 @@ void wall::render(textures* textures) {
             textures->getTextureBFromXandY(0, textureY, textureX) * shade
         );
 
-        glVertex2i((columnOffset * 2), i + this->lineOffsetFromTop);
+        glVertex2i((columnOffset * PAINT_SIZE), i + this->lineOffsetFromTop);
 
         if (i + this->lineOffsetFromTop > RESOLUTION_HEIGHT) {
             break;

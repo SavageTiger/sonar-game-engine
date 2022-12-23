@@ -7,7 +7,7 @@
 
 void ceiling::render(textures* textures, player* player, wall* wall)
 {
-    glPointSize(2);
+    glPointSize(PAINT_SIZE);
     glBegin(GL_POINTS);
 
     int playerX = *player->getX(),
@@ -42,7 +42,7 @@ void ceiling::render(textures* textures, player* player, wall* wall)
 
         counter++;
 
-        glVertex2i((wall->columnOffset * 2), wall->lineOffsetFromTop - counter);
+        glVertex2i((wall->columnOffset * PAINT_SIZE), wall->lineOffsetFromTop - counter);
     }
 
     glEnd();

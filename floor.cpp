@@ -7,7 +7,7 @@
 
 void floor::render(textures* textures, player* player, wall* wall)
 {
-    glPointSize(2);
+    glPointSize(PAINT_SIZE);
     glBegin(GL_POINTS);
 
     int playerX = *player->getX(),
@@ -38,7 +38,7 @@ void floor::render(textures* textures, player* player, wall* wall)
             textures->getTextureBFromXandY(1, iTextureX, iTextureY)
         );
 
-        glVertex2i((wall->columnOffset * 2), i);
+        glVertex2i((wall->columnOffset * PAINT_SIZE), i);
     }
 
     glEnd();
