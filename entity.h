@@ -2,13 +2,22 @@
 #define SPRITE_H
 
 #include "player.h"
+#include "wall.h"
 
 class entity {
 private:
     float getRadians(float degrees);
 
 public:
-    void render(player *player);
+    void render(
+        float size,
+        float spriteX,
+        float spriteY,
+        float spriteTop,
+        player *player,
+        textures* textures,
+        wall** walls
+    );
 };
 
 

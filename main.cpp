@@ -5,14 +5,14 @@
 #include "raycaster.h"
 #include "floor.h"
 #include "ceiling.h"
-#include "entity.h"
+#include "entities.h"
 #include "resolution.h"
 
 textures G_TEXTURES;
 player G_PLAYER;
 floor G_FLOOR;
 ceiling G_CEILING;
-entity G_ENTITY;
+entities G_ENTITIES;
 map G_MAP;
 raycaster G_RAYCASTER;
 
@@ -29,17 +29,15 @@ void renderPipeline()
 
    G_PLAYER.render();
 
-   for (auto i = 0; i < RESOLUTION_WIDTH; i++) {
+   for (int i = 0; i < RESOLUTION_WIDTH; i++) {
 
        G_FLOOR.render(&G_TEXTURES, &G_PLAYER, walls[i]);
        G_CEILING.render(&G_TEXTURES, &G_PLAYER, walls[i]);
 
        walls[i]->render(&G_TEXTURES);
-
-       delete walls[i];
    }
 
-    G_ENTITY.render(&G_PLAYER);
+    G_ENTITIES.render(&G_PLAYER, &G_TEXTURES, walls);
 
    delete walls;
 
@@ -51,7 +49,7 @@ void gameTick(int val)
     if (G_PLAYER.move(&G_MAP) == true) {
         glutPostRedisplay();
 
-        glutTimerFunc(30, gameTick, 0);
+        glutTimerFunc(10, gameTick, 0);
 
         return;
     }
