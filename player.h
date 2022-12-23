@@ -14,10 +14,10 @@ private:
 
     keysPressed keyPressState;
 
-    int playerX = 150;
-    int playerY = 400;
+    int playerX = 382;
+    int playerY = 165;
 
-    int lookingDirection  = 270;
+    int lookingDirection  = 95;
     int lookingDirectionX = 0;
     int lookingDirectionY = 0;
 

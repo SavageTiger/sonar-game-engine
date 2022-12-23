@@ -3,7 +3,6 @@
 #include "wall.h"
 #include "map.h"
 #include "resolution.h"
-#include <cstdio>
 
 wall::wall(int pColumnOffset, float pHitOnMapX, float pHitOnMapY, float pTileOffset, float pDistance, bool pIsVertical)
 {
