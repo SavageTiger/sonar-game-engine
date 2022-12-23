@@ -131,7 +131,7 @@ float* raycaster::sonarRight(player* player, map* map, float angle)
         int x = (playerIsOnColumn * TILE_SIZE) + (i * TILE_SIZE);
         int y = ((*player->getY()) + (nextTile * tanValue));
 
-        if (map->isWall(x + 5, y) == true) {
+        if (map->isWall(x + 1, y) == true) {
             returnValue[0] = x;
             returnValue[1] = y;
 
@@ -160,7 +160,7 @@ float* raycaster::sonarLeft(player* player, map* map, float angle)
         int x = (playerIsOnColumn * TILE_SIZE) - (i * TILE_SIZE);
         int y = ((*player->getY()) + (previousTile * tanValue));
 
-        if (map->isWall(x - 5, y) == true) {
+        if (map->isWall(x - 1, y) == true && x > 0 && y > 0) {
             returnValue[0] = x;
             returnValue[1] = y;
 
@@ -218,7 +218,7 @@ float* raycaster::sonarDown(player* player, map* map, float angle)
         float x = ((*player->getX()) - (previousTile * tanValue));
         float y = ((playerOnRow + 1) * TILE_SIZE) + (i * TILE_SIZE);
 
-        if (map->isWall(x, y + 5) == true) {
+        if (map->isWall(x, y + 1) == true) {
             returnValue[0] = x;
             returnValue[1] = y;
 
@@ -234,7 +234,7 @@ float* raycaster::sonarDown(player* player, map* map, float angle)
 
 int raycaster::getLookingVerticalOrientation(int lookingDirection)
 {
-    if (lookingDirection >= 0 && lookingDirection <= 90 || lookingDirection >= 270 && lookingDirection <= 360) {
+    if (lookingDirection >= 0 && lookingDirection < 90 || lookingDirection >= 270 && lookingDirection <= 360) {
         return RIGHT;
     }
 
