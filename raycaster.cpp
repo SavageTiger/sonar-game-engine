@@ -90,7 +90,15 @@ wall** raycaster::castRays(player* player, map* map)
             // Correct the horizontal fishbowl effect.
             horizontalDistance = horizontalDistance * cos(getRadians(rayAngle));
 
-            walls[i] = new wall(i, horizontalHitX, horizontalHitY, tileOffset, horizontalDistance, false);
+            walls[i] = new wall(
+                map->getTextureId(horizontalHitX, horizontalHitY),
+                i,
+                horizontalHitX,
+                horizontalHitY,
+                tileOffset,
+                horizontalDistance,
+                false
+            );
         } else {
             /*glColor3f(0,1,0);
             glLineWidth(1);
@@ -105,7 +113,15 @@ wall** raycaster::castRays(player* player, map* map)
             // Correct the vertical fishbowl effect.
             verticalDistance = verticalDistance * cos(getRadians(rayAngle));
 
-            walls[i] = new wall(i, verticalHitX, verticalHitY, tileOffset, verticalDistance, true);
+            walls[i] = new wall(
+                map->getTextureId(horizontalHitX, horizontalHitY),
+                i,
+                verticalHitX,
+                verticalHitY,
+                tileOffset,
+                verticalDistance,
+                true
+            );
         }
 
         angle =

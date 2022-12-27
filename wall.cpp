@@ -4,35 +4,36 @@
 #include "map.h"
 #include "resolution.h"
 
-wall::wall(int pColumnOffset, float pHitOnMapX, float pHitOnMapY, float pTileOffset, float pDistance, bool pIsVertical)
+wall::wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical)
 {
-    columnOffset = pColumnOffset;
-    hitOnMapX    = pHitOnMapX;
-    hitOnMapY    = pHitOnMapY;
-    tileOffset   = pTileOffset;
-    distance     = pDistance;
-    isVertical   = pIsVertical;
+    columnOffset = paramColumnOffset;
+    hitOnMapX    = paramHitOnMapX;
+    hitOnMapY    = paramHitOnMapY;
+    tileOffset   = paramTileOffset;
+    distance     = paramDistance;
+    isVertical   = paramIsVertical;
+    textureId    = paramTextureId;
 
     wallHeight        = (TILE_SIZE * RESOLUTION_HEIGHT) / distance;
     lineOffsetFromTop = (RESOLUTION_HEIGHT / 2) - (wallHeight / 2);
 }
 
 void wall::render(textures* textures) {
-    float textureStep = 64.0 / (float) this->wallHeight;
+    float textureStep = TILE_SIZE / (float) this->wallHeight;
 
     glPointSize(PAINT_SIZE);
     glBegin(GL_POINTS);
 
     for (int i = 0; i < this->wallHeight; i++) {
-        int textureX = textureStep * i;
-        int textureY = fmod(this->tileOffset, 1) * TILE_SIZE;
+        short textureX = textureStep * i;
+        short textureY = fmod(this->tileOffset, 1) * TILE_SIZE;
 
         float shade = this->isVertical ? .7 : 0.5;
 
         glColor3ub(
-            textures->getTextureRFromXandY(0, textureY, textureX) * shade,
-            textures->getTextureGFromXandY(0, textureY, textureX) * shade,
-            textures->getTextureBFromXandY(0, textureY, textureX) * shade
+            textures->getTextureRFromXandY(textureId, textureY, textureX) * shade,
+            textures->getTextureGFromXandY(textureId, textureY, textureX) * shade,
+            textures->getTextureBFromXandY(textureId, textureY, textureX) * shade
         );
 
         glVertex2i((columnOffset * PAINT_SIZE), i + this->lineOffsetFromTop);

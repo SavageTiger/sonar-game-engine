@@ -6,6 +6,7 @@
 
 class wall {
 public:
+    short textureId;
     int columnOffset;
     float hitOnMapX;
     float hitOnMapY;
@@ -15,7 +16,7 @@ public:
     int wallHeight;
     int lineOffsetFromTop;
 
-    wall(int pColumnOffset, float pHitOnMapX, float pHitOnMapY, float pTileOffset, float pDistance, bool pIsVertical);
+    wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical);
     void render(textures* textures);
 };
 
