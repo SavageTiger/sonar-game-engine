@@ -18,9 +18,8 @@ private:
 public:
     void renderMap(const char* mapName, textures* textures);
     bool isWall(int x, int y, short margin = 0);
+    float wallThickness(int row, int column);
     int getTextureId(float x, float y);
 
-
 };
-
 #endif

@@ -32,14 +32,14 @@ wall** raycaster::castRays(player* player, map* map)
         angle = fixAngleOverflow(angle);
 
         if (raycaster::getLookingHorizontalOrientation(angle) == UP) {
-            float *hit = sonarUp(player, map, angle);
+            int *hit = sonarUp(player, map, angle);
 
             horizontalHitX = hit[0];
             horizontalHitY = hit[1];
 
             delete hit;
         } else {
-            float *hit = sonarDown(player, map, angle);
+            int *hit = sonarDown(player, map, angle);
 
             horizontalHitX = hit[0];
             horizontalHitY = hit[1];
@@ -48,14 +48,14 @@ wall** raycaster::castRays(player* player, map* map)
         }
 
         if (raycaster::getLookingVerticalOrientation(angle) == RIGHT) {
-            float *hit = sonarRight(player, map, angle);
+            int *hit = sonarRight(player, map, angle);
 
             verticalHitX = hit[0];
             verticalHitY = hit[1];
 
             delete hit;
         } else {
-            float *hit = sonarLeft(player, map, angle);
+            int *hit = sonarLeft(player, map, angle);
 
             verticalHitX = hit[0];
             verticalHitY = hit[1];
@@ -78,12 +78,12 @@ wall** raycaster::castRays(player* player, map* map)
 
         if ((horizontalDistance < verticalDistance || verticalHitX == -1) && horizontalHitX != -1) {
 
-            /*glColor3f(1, 1, 0);
+            glColor3f(1, 1, 0);
             glLineWidth(1);
             glBegin(GL_LINES);
             glVertex2i(*player->getX(), *player->getY());
             glVertex2i(horizontalHitX, horizontalHitY);
-            glEnd();*/
+            glEnd();
 
             float tileOffset = horizontalHitX / TILE_SIZE;
 
@@ -100,13 +100,13 @@ wall** raycaster::castRays(player* player, map* map)
                 false
             );
         } else {
-            /*glColor3f(0,1,0);
+            glColor3f(0,1,0);
             glLineWidth(1);
             glBegin(GL_LINES);
 
             glVertex2i(*player->getX(), *player->getY());
             glVertex2i(verticalHitX, verticalHitY);
-            glEnd();*/
+            glEnd();
 
             float tileOffset = verticalHitY / TILE_SIZE;
 
@@ -132,22 +132,25 @@ wall** raycaster::castRays(player* player, map* map)
     return walls;
 }
 
-float* raycaster::sonarRight(player* player, map* map, float angle)
+int* raycaster::sonarRight(player* player, map* map, float angle)
 {
-    float* returnValue = new float[2];
+    int* returnValue = new int[2];
+
     int playerIsOnColumn = (*player->getX() / TILE_SIZE) + 1;
 
+    float tanValue = tan(getRadians(angle));
+
     for (int i = 0; i < MAX_DEPTH; i++) {
-        int nextTile = (((playerIsOnColumn * TILE_SIZE) - *player->getX()));
-
-        nextTile = nextTile + (TILE_SIZE * i);
-
-        float tanValue = tan(getRadians(angle));
+        short nextTile = (playerIsOnColumn + i);
 
         int x = (playerIsOnColumn * TILE_SIZE) + (i * TILE_SIZE);
-        int y = ((*player->getY()) + (nextTile * tanValue));
+        int y = ((*player->getY()) + ((nextTile * TILE_SIZE) - *player->getX()) * tanValue);
 
-        if (map->isWall(x + 1, y) == true) {
+        if (map->isWall(x + 1, y) == true ) {
+            if (map->wallThickness(x + 1, y) != 1) {
+                x += (TILE_SIZE * map->wallThickness(x + 1, y));
+            }
+
             returnValue[0] = x;
             returnValue[1] = y;
 
@@ -161,22 +164,25 @@ float* raycaster::sonarRight(player* player, map* map, float angle)
     return returnValue;
 }
 
-float* raycaster::sonarLeft(player* player, map* map, float angle)
+int* raycaster::sonarLeft(player* player, map* map, float angle)
 {
-    float* returnValue = new float[2];
-    int playerIsOnColumn = (*player->getX() / TILE_SIZE);
+    int* returnValue = new int[2];
+
+    short playerIsOnColumn = (*player->getX() / TILE_SIZE);
+
+    float tanValue = tan(getRadians(angle));
 
     for (int i = 0; i < MAX_DEPTH; i++) {
-        int previousTile = (((playerIsOnColumn * TILE_SIZE) - *player->getX()));
-
-        previousTile = previousTile - (TILE_SIZE * i);
-
-        float tanValue = tan(getRadians(angle));
+        short previousTile = (playerIsOnColumn - i);
 
         int x = (playerIsOnColumn * TILE_SIZE) - (i * TILE_SIZE);
-        int y = ((*player->getY()) + (previousTile * tanValue));
+        int y = ((*player->getY()) + ((previousTile * TILE_SIZE) - *player->getX()) * tanValue);
 
-        if (map->isWall(x - 1, y) == true && x > 0 && y > 0) {
+        if (map->isWall(x - 1, y) == true) {
+            if (map->wallThickness(x - 1, y) != 1) {
+                x -= (TILE_SIZE * map->wallThickness(x - 1, y));
+            }
+
             returnValue[0] = x;
             returnValue[1] = y;
 
@@ -190,24 +196,26 @@ float* raycaster::sonarLeft(player* player, map* map, float angle)
     return returnValue;
 }
 
-float* raycaster::sonarUp(player* player, map* map, float angle)
+int* raycaster::sonarUp(player* player, map* map, float angle)
 {
-    float* returnValue = new float[2];
+    int* returnValue = new int[2];
     int playerOnRow = (*player->getY() / TILE_SIZE);
 
+    float tanValue = -1 / tan(getRadians(angle));
+
     for (int i = 0; i < MAX_DEPTH; i++) {
-        int previousTile = (((playerOnRow * TILE_SIZE) - *player->getY()));
+        short previousTile = (playerOnRow - i);
 
-        previousTile = previousTile - (TILE_SIZE * i);
-
-        float tanValue = -1 / tan(getRadians(angle));
-
-        float x = ((*player->getX()) - (previousTile * tanValue));
-        float y = (playerOnRow * TILE_SIZE) - (i * TILE_SIZE);
+        int x = (*player->getX() - (((previousTile * TILE_SIZE) - *player->getY()) * tanValue));
+        int y = (playerOnRow * TILE_SIZE) - (i * TILE_SIZE);
 
         if (map->isWall(x, y - 1) == true) {
+            if (map->wallThickness(x, y - 1) != 1) {
+                y -= (TILE_SIZE * map->wallThickness(x, y - 1));
+            }
+
             returnValue[0] = x;
-            returnValue[1] = y;
+            returnValue[1] = y - 1;
 
             return returnValue;
         }
@@ -219,22 +227,24 @@ float* raycaster::sonarUp(player* player, map* map, float angle)
     return returnValue;
 }
 
-float* raycaster::sonarDown(player* player, map* map, float angle)
+int* raycaster::sonarDown(player* player, map* map, float angle)
 {
-    float* returnValue = new float[2];
+    int* returnValue = new int[2];
     int playerOnRow = (*player->getY() / TILE_SIZE);
 
+    float tanValue = -1 / tan(getRadians(angle));
+
     for (int i = 0; i < MAX_DEPTH; i++) {
-        int previousTile = (((playerOnRow + 1) * TILE_SIZE) - *player->getY());
+        short nextTile = (playerOnRow + 1 + i);
 
-        previousTile = previousTile + (TILE_SIZE * i);
-
-        float tanValue = -1 / tan(getRadians(angle));
-
-        float x = ((*player->getX()) - (previousTile * tanValue));
-        float y = ((playerOnRow + 1) * TILE_SIZE) + (i * TILE_SIZE);
+        int x = ((*player->getX()) - (((nextTile * TILE_SIZE) - *player->getY()) * tanValue));
+        int y = ((playerOnRow + 1) * TILE_SIZE) + (i * TILE_SIZE);
 
         if (map->isWall(x, y + 1) == true) {
+            if (map->wallThickness(x, y + 1) != 1) {
+                y += (TILE_SIZE * map->wallThickness(x, y + 1));
+            }
+
             returnValue[0] = x;
             returnValue[1] = y;
 
@@ -266,7 +276,7 @@ int raycaster::getLookingHorizontalOrientation(int lookingDirection)
     return DOWN;
 }
 
-float raycaster::calculateRayDistance(int playerX, int playerY, float rayHitX, float rayHitY)
+float raycaster::calculateRayDistance(int playerX, int playerY, int rayHitX, int rayHitY)
 {
     return sqrt(pow(playerX - rayHitX, 2) + pow(playerY - rayHitY, 2));
 }

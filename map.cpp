@@ -100,6 +100,14 @@ bool map::isWall(int x, int y, short margin)
     return layout[row][column] == 49 || layout[row][column] == 50;
 }
 
+float map::wallThickness(int x, int y)
+{
+    int column = x / TILE_SIZE;
+    int row = y / TILE_SIZE;
+
+    return layout[row][column] == 50 ? 0.5 : 1;
+}
+
 int map::getTextureId(float x, float y)
 {
     int column = x / TILE_SIZE;
