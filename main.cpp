@@ -8,13 +8,32 @@
 #include "entities.h"
 #include "resolution.h"
 
+int currentFPS = 0;
+double previousFrameTime = 0.0;
+
 textures G_TEXTURES;
 player G_PLAYER;
 floor G_FLOOR;
 ceiling G_CEILING;
-entities G_ENTITIES;
 map G_MAP;
+entities G_ENTITIES = entities(&G_MAP);
 raycaster G_RAYCASTER;
+
+void updateFPS()
+{
+    double currentTime = glutGet(GLUT_ELAPSED_TIME);
+    double elapsedTime = currentTime - previousFrameTime;
+
+    previousFrameTime = currentTime;
+
+    currentFPS = (int)(1000.0 / elapsedTime);
+
+    char windowTitle[64];
+
+    sprintf(windowTitle, "Sonar game engine (FPS: %d)", currentFPS);
+
+    glutSetWindowTitle(windowTitle);
+}
 
 void renderPipeline()
 {
@@ -30,7 +49,6 @@ void renderPipeline()
    G_PLAYER.render();
 
    for (int i = 0; i < RESOLUTION_WIDTH; i++) {
-
        G_FLOOR.render(&G_TEXTURES, &G_PLAYER, walls[i]);
        G_CEILING.render(&G_TEXTURES, &G_PLAYER, walls[i]);
 
@@ -39,22 +57,24 @@ void renderPipeline()
 
     G_ENTITIES.render(&G_PLAYER, &G_TEXTURES, walls);
 
-   delete walls;
+    for (int i = 0; i < RESOLUTION_WIDTH; i++) {
+        delete walls[i];
+    }
 
-   glutSwapBuffers();
+    delete walls;
+
+    G_PLAYER.move(&G_MAP); // FIXME, move back to game-tick
+
+    glutSwapBuffers();
+    glutPostRedisplay();
 }
 
 void gameTick(int val)
 {
-    if (G_PLAYER.move(&G_MAP) == true) {
-        glutPostRedisplay();
 
-        glutTimerFunc(10, gameTick, 0);
+    updateFPS();
 
-        return;
-    }
-
-    glutTimerFunc(100, gameTick, 0);
+    glutTimerFunc(16, gameTick, 0);
 }
 
 void registerKeyPress(int key, int x, int y)
@@ -77,9 +97,9 @@ int main(int argc, char* argv[])
 
     window.renderWindow();
 
-    glutTimerFunc(100, gameTick, 0);
     glutDisplayFunc(renderPipeline);
     glutSpecialFunc(registerKeyPress);
     glutSpecialUpFunc(registerKeyPressUp);
+    glutTimerFunc(0, gameTick, 0);
     glutMainLoop();
 }
