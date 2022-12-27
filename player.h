@@ -14,18 +14,16 @@ private:
 
     keysPressed keyPressState;
 
-    int playerX = 382;
-    int playerY = 165;
+    int playerX = 80;
+    int playerY = 180;
 
-    int lookingDirection  = 95;
+    int lookingDirection  = 270;
     int lookingDirectionX = 0;
     int lookingDirectionY = 0;
 
     void recalculateLookingDirection();
     void turnRight();
     void turnLeft();
-    int calculateMoveX(bool forward, int desiredDistance);
-    int calculateMoveY(bool forward, int desiredDistance);
     void walk(bool forward, map* map);
 
 public:

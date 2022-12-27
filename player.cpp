@@ -76,17 +76,29 @@ bool player::move(map* map)
 
 void player::walk(bool forward, map* map)
 {
-    int wallCheckX, wallCheckY;
+    short collisionMargin = TILE_SIZE / 8;
+    float movingDistance = 5;
 
-    wallCheckX = calculateMoveX(forward, 15);
-    wallCheckY = calculateMoveY(forward, 15);
+    float lookingDirectionRadians = getLookingDirectionInRadians();
 
-    if (map->isWall(wallCheckX, wallCheckY) == true) {
-        return;
+    short movementDirection = forward ? 1 : -1;
+
+    int
+        desiredX = playerX + movementDirection * movingDistance * cos(lookingDirectionRadians),
+        desiredY = playerY + movementDirection * movingDistance * sin(lookingDirectionRadians);
+
+    if (map->isWall(desiredX, desiredY, collisionMargin) == true) {
+        if (map->isWall(playerX, desiredY, collisionMargin) == false) {
+            desiredX = playerX;
+        } else if (map->isWall(desiredX, playerY, collisionMargin) == false) {
+            desiredY = playerY;
+        } else {
+            return;
+        }
     }
 
-    playerX = calculateMoveX(forward, 5);
-    playerY = calculateMoveY(forward, 5);
+    playerX = desiredX;
+    playerY = desiredY;
 }
 
 void player::turnRight()
@@ -135,26 +147,6 @@ int* player::getY()
 {
     return &playerY;
 }
-
-
-int player::calculateMoveX(bool forward, int desiredDistance)
-{
-    if (forward == true) {
-        return (playerX + (desiredDistance * cos(lookingDirection * TwicePI / 360)));
-    }
-
-    return (playerX - (desiredDistance * cos(lookingDirection * TwicePI / 360)));
-}
-
-int player::calculateMoveY(bool forward, int desiredDistance)
-{
-    if (forward == true) {
-        return (playerY + (desiredDistance * sin(lookingDirection * TwicePI / 360)));
-    }
-
-    return (playerY - (desiredDistance * sin(lookingDirection * TwicePI / 360)));
-}
-
 
 void player::recalculateLookingDirection()
 {

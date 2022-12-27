@@ -71,7 +71,7 @@ void map::renderMap(const char* mapName, textures* textures) {
     }
 }
 
-bool map::isWall(float x, float y)
+bool map::isWall(int x, int y, short margin)
 {
     int column = x / TILE_SIZE;
     int row = y / TILE_SIZE;
@@ -80,15 +80,24 @@ bool map::isWall(float x, float y)
         return false;
     }
 
-    if (row + 1 > layout.size()) {
+    if (row >= layout.size()) {
         return false;
     }
 
-    if (column + 1 > layout[row].size()) {
+    if (column >= layout[row].size()) {
         return false;
     }
 
-    return layout[row][column] == 49;
+    if (margin > 0 && (
+        isWall(x - margin, y - margin) ||
+        isWall(x + margin, y - margin) ||
+        isWall(x - margin, y + margin) ||
+        isWall(x + margin, y + margin))
+    ) {
+        return true;
+    }
+
+    return layout[row][column] == 49 || layout[row][column] == 50;
 }
 
 int map::getTextureId(float x, float y)
