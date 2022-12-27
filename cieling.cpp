@@ -14,7 +14,7 @@ void ceiling::render(textures* textures, player* player, wall* wall)
         playerY = *player->getY();
 
     float textureX, textureY;
-    int iTextureX, iTextureY;
+    short textureXIndex, textureYIndex;
 
     float eyeHeight = RESOLUTION_HEIGHT / 2;
 
@@ -23,21 +23,22 @@ void ceiling::render(textures* textures, player* player, wall* wall)
 
     int counter = 0;
 
+    float fixFishEye = cos(rayAngleRadian + (player->getLookingDirectionInRadians()));
+
     for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < RESOLUTION_HEIGHT; i++) {
         float drawPointMinusEyeHeight = i - eyeHeight;
 
-        float fixFishEye = cos(rayAngleRadian + (player->getLookingDirectionInRadians()));
 
         textureX = playerX + cos(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
         textureY = playerY - sin(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
 
-        iTextureX = (int)textureX & (TILE_SIZE - 1);
-        iTextureY = (int)textureY & (TILE_SIZE - 1);
+        textureXIndex = (int)textureX & (TILE_SIZE - 1);
+        textureYIndex = (int)textureY & (TILE_SIZE - 1);
 
         glColor3ub(
-            textures->getTextureRFromXandY(2, iTextureX, iTextureY),
-            textures->getTextureGFromXandY(2, iTextureX, iTextureY),
-            textures->getTextureBFromXandY(2, iTextureX, iTextureY)
+            textures->getTextureRFromXandY(2, textureXIndex, textureYIndex),
+            textures->getTextureGFromXandY(2, textureXIndex, textureYIndex),
+            textures->getTextureBFromXandY(2, textureXIndex, textureYIndex)
         );
 
         counter++;

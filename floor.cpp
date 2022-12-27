@@ -10,32 +10,33 @@ void floor::render(textures* textures, player* player, wall* wall)
     glPointSize(PAINT_SIZE);
     glBegin(GL_POINTS);
 
-    int playerX = *player->getX(),
+    short playerX = *player->getX(),
         playerY = *player->getY();
 
     float textureX, textureY;
-    int iTextureX, iTextureY;
+    short textureXIndex, textureYIndex;
 
     float eyeHeight = RESOLUTION_HEIGHT / 2;
 
     float rayAngleRadian =
             -atan2((int)wall->hitOnMapY - playerY, (int)wall->hitOnMapX - playerX);
 
+    float fixFishEye = cos(rayAngleRadian + (player->getLookingDirectionInRadians()));
+
     for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < RESOLUTION_HEIGHT; i++) {
         float drawPointMinusEyeHeight = i - eyeHeight;
 
-        float fixFishEye = cos(rayAngleRadian + (player->getLookingDirectionInRadians()));
 
         textureX = playerX + cos(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
         textureY = playerY - sin(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
 
-        iTextureX = (int)textureX & (TILE_SIZE - 1);
-        iTextureY = (int)textureY & (TILE_SIZE - 1);
+        textureXIndex = (int)textureX & (TILE_SIZE - 1);
+        textureYIndex = (int)textureY & (TILE_SIZE - 1);
 
         glColor3ub(
-            textures->getTextureRFromXandY(1, iTextureX, iTextureY),
-            textures->getTextureGFromXandY(1, iTextureX, iTextureY),
-            textures->getTextureBFromXandY(1, iTextureX, iTextureY)
+            textures->getTextureRFromXandY(1, textureXIndex, textureYIndex),
+            textures->getTextureGFromXandY(1, textureXIndex, textureYIndex),
+            textures->getTextureBFromXandY(1, textureXIndex, textureYIndex)
         );
 
         glVertex2i((wall->columnOffset * PAINT_SIZE), i);
