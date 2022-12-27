@@ -4,6 +4,8 @@
 #include "player.h"
 #include "wall.h"
 
+
+
 class entity {
 private:
     float getRadians(float degrees);
@@ -11,9 +13,9 @@ private:
 public:
     void render(
         float size,
-        float spriteX,
-        float spriteY,
-        float spriteTop,
+        int spriteX,
+        int spriteY,
+        float distanceFromCieling,
         player *player,
         textures* textures,
         wall** walls

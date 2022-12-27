@@ -6,14 +6,13 @@
 
 void entity::render(
     float size,
-    float spriteX,
-    float spriteY,
-    float spriteTop,
+    int spriteX,
+    int spriteY,
+    float distanceFromCieling,
     player *player,
     textures* textures,
     wall** walls
 ) {
-    return;
     float spriteDistance = sqrt(pow(*player->getX() - spriteX, 2) + pow(*player->getY() - spriteY, 2));
 
     spriteX = spriteX - *player->getX(),
@@ -50,26 +49,26 @@ void entity::render(
         float objectHeight = (objectFloor - objectCeiling) * size;
         float objectWidth = objectHeight / objectAspectRatio;
 
-        float objectMiddle = (.5 * (objectAngle / (getRadians(FOV) / 2)) + .5) * RESOLUTION_WIDTH;
+        int objectMiddle = (.5 * (objectAngle / (getRadians(FOV) / 2)) + .5) * RESOLUTION_WIDTH;
 
         glPointSize(PAINT_SIZE * 2);
         glBegin(GL_POINTS);
 
-        int renderRowOffset = (objectFloor - objectCeiling) * spriteTop;
+        int renderRowOffset = (objectFloor - objectCeiling) * distanceFromCieling;
 
         for (int renderColumn = 0; renderColumn < objectWidth; renderColumn++) {
             for (int renderRow = renderRowOffset; renderRow < objectHeight + renderRowOffset; renderRow++) {
-                int columnX = (int)objectMiddle + renderColumn - (objectWidth / 2);
+                int columnX = objectMiddle + renderColumn - (objectWidth / 2);
 
                 if (columnX <= 0 || columnX >= RESOLUTION_WIDTH) {
                     continue;
                 }
 
-                if (walls[columnX]->distance < spriteDistance) {
+                if (walls[columnX]->distance < spriteDistance && (spriteDistance - walls[columnX]->distance) > 100) {
                     continue;
                 }
 
-                int
+                short
                     textureX = (spriteWidth / objectWidth) * renderColumn,
                     textureY = (spriteHeight / objectHeight) * (renderRow - renderRowOffset);
 
