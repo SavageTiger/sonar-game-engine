@@ -5,20 +5,20 @@
 class textures {
 private:
     unsigned char* textureMemory[64];
-    void loadTextureFromDisk(int textureId);
+    void loadTextureFromDisk(short textureId);
 
     int textureHeight[64];
     int textureWidth[64];
 
 public:
-    void loadTexture(int textureId);
+    void loadTexture(short textureId);
 
-    int getTextureRFromXandY(int textureId, int x, int y);
-    int getTextureGFromXandY(int textureId, int x, int y);
-    int getTextureBFromXandY(int textureId, int x, int y);
+    int getTextureRFromXandY(short textureId, short x, short y);
+    int getTextureGFromXandY(short textureId, short x, short y);
+    int getTextureBFromXandY(short textureId, short x, short y);
 
-    int getTextureHeight(int textureId);
-    int getTextureWidth(int textureId);
+    int getTextureHeight(short textureId);
+    int getTextureWidth(short textureId);
 };
 
 

@@ -3,7 +3,7 @@
 #include "textures.h"
 #include <cstdio>
 
-void textures::loadTexture(int textureId)
+void textures::loadTexture(short textureId)
 {
     this->loadTextureFromDisk(textureId);
 
@@ -28,49 +28,50 @@ void textures::loadTexture(int textureId)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-int textures::getTextureRFromXandY(int textureId, int x, int y)
+int textures::getTextureRFromXandY(short textureId, short x, short y)
 {
     this->loadTextureFromDisk(textureId);
 
     return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 0];
 }
 
-int textures::getTextureGFromXandY(int textureId, int x, int y)
+int textures::getTextureGFromXandY(short textureId, short x, short y)
 {
     this->loadTextureFromDisk(textureId);
 
     return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 1];
 }
 
-int textures::getTextureBFromXandY(int textureId, int x, int y)
+int textures::getTextureBFromXandY(short textureId, short x, short y)
 {
     this->loadTextureFromDisk(textureId);
 
     return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 2];
 }
 
-int textures::getTextureHeight(int textureId)
+int textures::getTextureHeight(short textureId)
 {
     this->loadTextureFromDisk(textureId);
 
     return textureHeight[textureId];
 }
 
-int textures::getTextureWidth(int textureId)
+int textures::getTextureWidth(short textureId)
 {
     this->loadTextureFromDisk(textureId);
 
     return textureWidth[textureId];
 }
 
-void textures::loadTextureFromDisk(int textureId)
+void textures::loadTextureFromDisk(short textureId)
 {
     if (textureMemory[textureId] == nullptr) {
-        char* textures [4] = {
+        char* textures [5] = {
             "maps/box.png",
             "maps/ceiling.png",
             "maps/floor.png",
-            "sprites/gun.png"
+            "sprites/gun.png",
+            "maps/door.png",
         };
 
         textureMemory[textureId] = SOIL_load_image(
