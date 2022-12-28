@@ -1,11 +1,14 @@
+#include "SDL.h"
+#include "SDL_image.h"
 
 #ifndef TEXTURES_H
 #define TEXTURES_H
 
 class textures {
 private:
-    unsigned char* textureMemory[64];
+    SDL_Surface* textureMemory[64];
     void loadTextureFromDisk(short textureId);
+    int getTextureValueFromXandY(short textureId, short x, short y, short channel);
 
     int textureHeight[64];
     int textureWidth[64];

@@ -1,5 +1,4 @@
 #include <GL/gl.h>
-#include <SOIL/SOIL.h>
 #include "textures.h"
 #include <cstdio>
 
@@ -19,7 +18,7 @@ void textures::loadTexture(short textureId)
         0,
         GL_RGB,
         GL_UNSIGNED_BYTE,
-        textureMemory[textureId]
+        textureMemory[textureId]->pixels
     );
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -30,23 +29,17 @@ void textures::loadTexture(short textureId)
 
 int textures::getTextureRFromXandY(short textureId, short x, short y)
 {
-    this->loadTextureFromDisk(textureId);
-
-    return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 0];
+    return this->getTextureValueFromXandY(textureId, x, y, 0);
 }
 
 int textures::getTextureGFromXandY(short textureId, short x, short y)
 {
-    this->loadTextureFromDisk(textureId);
-
-    return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 1];
+    return this->getTextureValueFromXandY(textureId, x, y, 1);
 }
 
 int textures::getTextureBFromXandY(short textureId, short x, short y)
 {
-    this->loadTextureFromDisk(textureId);
-
-    return textureMemory[textureId][(y * textureHeight[textureId] + x) * 3 + 2];
+    return this->getTextureValueFromXandY(textureId, x, y, 2);
 }
 
 int textures::getTextureHeight(short textureId)
@@ -63,23 +56,43 @@ int textures::getTextureWidth(short textureId)
     return textureWidth[textureId];
 }
 
+int textures::getTextureValueFromXandY(short textureId, short x, short y, short channel)
+{
+    this->loadTextureFromDisk(textureId);
+
+    Uint8* pixels = (Uint8*)textureMemory[textureId]->pixels;
+
+    return pixels[(y * textureHeight[textureId] + x) * 3 + channel];
+}
+
 void textures::loadTextureFromDisk(short textureId)
 {
     if (textureMemory[textureId] == nullptr) {
         char* textures [5] = {
             "maps/box.png",
-            "maps/ceiling.png",
             "maps/floor.png",
+            "maps/ceiling.png",
             "sprites/gun.png",
             "maps/door.png",
         };
 
-        textureMemory[textureId] = SOIL_load_image(
-            textures[textureId],
-            &textureHeight[textureId],
-            &textureWidth[textureId],
-            0,
-            SOIL_LOAD_RGB
-        );
+        SDL_Surface* originalSurface = IMG_Load(textures[textureId]);
+
+        if (originalSurface == nullptr) {
+            printf("Unable to load textures '%s'", textures[textureId]);
+        }
+
+        SDL_Surface *normalizedSurface = SDL_ConvertSurfaceFormat(originalSurface, SDL_PIXELFORMAT_RGB24, 0);
+
+        SDL_PixelFormat* pixelFormat = normalizedSurface->format;
+        pixelFormat->BytesPerPixel = 3;
+        SDL_Surface *rgbSurface = SDL_ConvertSurface(normalizedSurface, pixelFormat, 0);
+
+        textureMemory[textureId] = rgbSurface;
+        textureWidth[textureId] = rgbSurface->w;
+        textureHeight[textureId] = rgbSurface->h;
+
+        SDL_FreeSurface(originalSurface);
+        SDL_FreeSurface(normalizedSurface);
     }
 }
