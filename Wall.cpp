@@ -1,10 +1,10 @@
 #include <GL/gl.h>
 #include <cmath>
-#include "wall.h"
-#include "map.h"
-#include "resolution.h"
+#include "Wall.h"
+#include "Map.h"
+#include "Resolution.h"
 
-wall::wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical)
+Wall::Wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical)
 {
     columnOffset = paramColumnOffset;
     hitOnMapX    = paramHitOnMapX;
@@ -18,7 +18,7 @@ wall::wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int 
     lineOffsetFromTop = (RESOLUTION_HEIGHT / 2) - (wallHeight / 2);
 }
 
-void wall::render(textures* textures) {
+void Wall::render(Textures* textures) {
     float textureStep = TILE_SIZE / (float) this->wallHeight;
 
     glPointSize(PAINT_SIZE);

@@ -1,13 +1,13 @@
-#include "entities.h"
-#include "entity.h"
+#include "Entities.h"
+#include "Entity.h"
 
-entity G_ENTITY;
+Entity G_ENTITY;
 
-entities::entities(map* map) {
+Entities::Entities(Map* map) {
     this->loadEntities(map);
 }
 
-void entities::render(player *player, textures* textures, wall** walls)
+void Entities::render(Player *player, Textures* textures, Wall** walls)
 {
     for (auto& entity : entityMemory) {
         if (entity.size == 0) {
@@ -26,7 +26,7 @@ void entities::render(player *player, textures* textures, wall** walls)
     }
 }
 
-void entities::loadEntities(map* map) {
+void Entities::loadEntities(Map* map) {
     entityProperties gun;
 
     gun.size = .3;

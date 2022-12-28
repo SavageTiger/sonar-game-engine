@@ -1,11 +1,11 @@
-#include "ceiling.h"
+#include "Ceiling.h"
 #include <GL/gl.h>
-#include "resolution.h"
-#include "textures.h"
-#include "map.h"
+#include "Resolution.h"
+#include "Textures.h"
+#include "Map.h"
 #include <cmath>
 
-void ceiling::render(textures* textures, player* player, wall* wall)
+void Ceiling::render(Textures* textures, Player* player, Wall* wall)
 {
     glPointSize(PAINT_SIZE);
     glBegin(GL_POINTS);

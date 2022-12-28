@@ -1,11 +1,11 @@
 #include <cstdio>
-#include "window.h"
-#include "player.h"
-#include "raycaster.h"
-#include "floor.h"
-#include "ceiling.h"
-#include "entities.h"
-#include "resolution.h"
+#include "Window.h"
+#include "Player.h"
+#include "Raycaster.h"
+#include "Floor.h"
+#include "Ceiling.h"
+#include "Entities.h"
+#include "Resolution.h"
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -16,13 +16,13 @@
 int currentFPS = 0;
 double previousFrameTime = 0.0;
 
-textures G_TEXTURES;
-player G_PLAYER;
-floor G_FLOOR;
-ceiling G_CEILING;
-map G_MAP;
-entities G_ENTITIES = entities(&G_MAP);
-raycaster G_RAYCASTER;
+Textures G_TEXTURES;
+Player G_PLAYER;
+Floor G_FLOOR;
+Ceiling G_CEILING;
+Map G_MAP;
+Entities G_ENTITIES = Entities(&G_MAP);
+Raycaster G_RAYCASTER;
 
 void updateFPS()
 {
@@ -46,7 +46,7 @@ void renderPipeline()
 
    G_MAP.renderMap("test", &G_TEXTURES);
 
-   wall** walls = G_RAYCASTER.castRays(
+   Wall** walls = G_RAYCASTER.castRays(
        &G_PLAYER,
        &G_MAP
    );
@@ -94,7 +94,7 @@ void registerKeyPressUp(int key, int x, int y)
 
 int main(int argc, char* argv[])
 {
-    window window;
+    Window window;
 
     setvbuf(stdout, NULL, _IONBF, 0);
 

@@ -1,10 +1,10 @@
 #include <cmath>
 #include <cstdio>
-#include "player.h"
-#include "raycaster.h"
-#include "map.h"
-#include "wall.h"
-#include "resolution.h"
+#include "Player.h"
+#include "Raycaster.h"
+#include "Map.h"
+#include "Wall.h"
+#include "Resolution.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -18,9 +18,9 @@
 #define UP 2
 #define DOWN 3
 
-wall** raycaster::castRays(player* player, map* map)
+Wall** Raycaster::castRays(Player* player, Map* map)
 {
-    wall** walls = new wall*[RESOLUTION_WIDTH];
+    Wall** walls = new Wall*[RESOLUTION_WIDTH];
 
     float angle = fixAngleOverflow(
         *player->getLookingDirection() - (FOV / 2)
@@ -36,7 +36,7 @@ wall** raycaster::castRays(player* player, map* map)
 
         angle = fixAngleOverflow(angle);
 
-        if (raycaster::getLookingHorizontalOrientation(angle) == UP) {
+        if (Raycaster::getLookingHorizontalOrientation(angle) == UP) {
             int *hit = sonarUp(player, map, angle);
 
             horizontalHitX = hit[0];
@@ -52,7 +52,7 @@ wall** raycaster::castRays(player* player, map* map)
             delete hit;
         }
 
-        if (raycaster::getLookingVerticalOrientation(angle) == RIGHT) {
+        if (Raycaster::getLookingVerticalOrientation(angle) == RIGHT) {
             int *hit = sonarRight(player, map, angle);
 
             verticalHitX = hit[0];
@@ -71,11 +71,11 @@ wall** raycaster::castRays(player* player, map* map)
         float verticalDistance   = calculateRayDistance(*player->getX(), *player->getY(), verticalHitX, verticalHitY);
         float horizontalDistance = calculateRayDistance(*player->getX(), *player->getY(), horizontalHitX, horizontalHitY);
 
-        if (horizontalDistance == verticalDistance && raycaster::getLookingHorizontalOrientation(angle) == UP) {
+        if (horizontalDistance == verticalDistance && Raycaster::getLookingHorizontalOrientation(angle) == UP) {
             horizontalDistance++;
         }
 
-        if (horizontalDistance == verticalDistance && raycaster::getLookingHorizontalOrientation(angle) == DOWN) {
+        if (horizontalDistance == verticalDistance && Raycaster::getLookingHorizontalOrientation(angle) == DOWN) {
             horizontalDistance--;
         }
 
@@ -95,7 +95,7 @@ wall** raycaster::castRays(player* player, map* map)
             // Correct the horizontal fishbowl effect.
             horizontalDistance = horizontalDistance * cos(getRadians(rayAngle));
 
-            walls[i] = new wall(
+            walls[i] = new Wall(
                 map->getTextureId(horizontalHitX, horizontalHitY),
                 i,
                 horizontalHitX,
@@ -118,7 +118,7 @@ wall** raycaster::castRays(player* player, map* map)
             // Correct the vertical fishbowl effect.
             verticalDistance = verticalDistance * cos(getRadians(rayAngle));
 
-            walls[i] = new wall(
+            walls[i] = new Wall(
                 map->getTextureId(horizontalHitX, horizontalHitY),
                 i,
                 verticalHitX,
@@ -137,7 +137,7 @@ wall** raycaster::castRays(player* player, map* map)
     return walls;
 }
 
-int* raycaster::sonarRight(player* player, map* map, float angle)
+int* Raycaster::sonarRight(Player* player, Map* map, float angle)
 {
     int* returnValue = new int[2];
 
@@ -169,7 +169,7 @@ int* raycaster::sonarRight(player* player, map* map, float angle)
     return returnValue;
 }
 
-int* raycaster::sonarLeft(player* player, map* map, float angle)
+int* Raycaster::sonarLeft(Player* player, Map* map, float angle)
 {
     int* returnValue = new int[2];
 
@@ -201,7 +201,7 @@ int* raycaster::sonarLeft(player* player, map* map, float angle)
     return returnValue;
 }
 
-int* raycaster::sonarUp(player* player, map* map, float angle)
+int* Raycaster::sonarUp(Player* player, Map* map, float angle)
 {
     int* returnValue = new int[2];
     int playerOnRow = (*player->getY() / TILE_SIZE);
@@ -232,7 +232,7 @@ int* raycaster::sonarUp(player* player, map* map, float angle)
     return returnValue;
 }
 
-int* raycaster::sonarDown(player* player, map* map, float angle)
+int* Raycaster::sonarDown(Player* player, Map* map, float angle)
 {
     int* returnValue = new int[2];
     int playerOnRow = (*player->getY() / TILE_SIZE);
@@ -263,7 +263,7 @@ int* raycaster::sonarDown(player* player, map* map, float angle)
     return returnValue;
 }
 
-int raycaster::getLookingVerticalOrientation(int lookingDirection)
+int Raycaster::getLookingVerticalOrientation(int lookingDirection)
 {
     if (lookingDirection >= 0 && lookingDirection < 90 || lookingDirection >= 270 && lookingDirection <= 360) {
         return RIGHT;
@@ -272,7 +272,7 @@ int raycaster::getLookingVerticalOrientation(int lookingDirection)
     return LEFT;
 }
 
-int raycaster::getLookingHorizontalOrientation(int lookingDirection)
+int Raycaster::getLookingHorizontalOrientation(int lookingDirection)
 {
     if (lookingDirection >= 180 && lookingDirection <= 270 || lookingDirection >= 270 && lookingDirection <= 360) {
         return UP;
@@ -281,17 +281,17 @@ int raycaster::getLookingHorizontalOrientation(int lookingDirection)
     return DOWN;
 }
 
-float raycaster::calculateRayDistance(int playerX, int playerY, int rayHitX, int rayHitY)
+float Raycaster::calculateRayDistance(int playerX, int playerY, int rayHitX, int rayHitY)
 {
     return sqrt(pow(playerX - rayHitX, 2) + pow(playerY - rayHitY, 2));
 }
 
-float raycaster::getRadians(float degrees)
+float Raycaster::getRadians(float degrees)
 {
     return degrees * M_PI / 180.0;
 }
 
-float raycaster::fixAngleOverflow(float angle) {
+float Raycaster::fixAngleOverflow(float angle) {
     if (angle > 359) {
         angle -= 360;
     }

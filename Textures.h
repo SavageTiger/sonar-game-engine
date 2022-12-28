@@ -4,7 +4,7 @@
 #ifndef TEXTURES_H
 #define TEXTURES_H
 
-class textures {
+class Textures {
 private:
     SDL_Surface* textureMemory[64];
     void loadTextureFromDisk(short textureId);

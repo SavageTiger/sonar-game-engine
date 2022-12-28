@@ -1,11 +1,11 @@
 #include <GL/gl.h>
-#include "floor.h"
-#include "resolution.h"
-#include "textures.h"
-#include "map.h"
+#include "Floor.h"
+#include "Resolution.h"
+#include "Textures.h"
+#include "Map.h"
 #include <cmath>
 
-void floor::render(textures* textures, player* player, wall* wall)
+void Floor::render(Textures* textures, Player* player, Wall* wall)
 {
     glPointSize(PAINT_SIZE);
     glBegin(GL_POINTS);

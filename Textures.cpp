@@ -1,4 +1,4 @@
-#include "textures.h"
+#include "Textures.h"
 #include <cstdio>
 
 #ifdef __APPLE__
@@ -7,7 +7,7 @@
 #include <GL/gl.h>
 #endif
 
-void textures::loadTexture(short textureId)
+void Textures::loadTexture(short textureId)
 {
     this->loadTextureFromDisk(textureId);
 
@@ -32,36 +32,36 @@ void textures::loadTexture(short textureId)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-int textures::getTextureRFromXandY(short textureId, short x, short y)
+int Textures::getTextureRFromXandY(short textureId, short x, short y)
 {
     return this->getTextureValueFromXandY(textureId, x, y, 0);
 }
 
-int textures::getTextureGFromXandY(short textureId, short x, short y)
+int Textures::getTextureGFromXandY(short textureId, short x, short y)
 {
     return this->getTextureValueFromXandY(textureId, x, y, 1);
 }
 
-int textures::getTextureBFromXandY(short textureId, short x, short y)
+int Textures::getTextureBFromXandY(short textureId, short x, short y)
 {
     return this->getTextureValueFromXandY(textureId, x, y, 2);
 }
 
-int textures::getTextureHeight(short textureId)
+int Textures::getTextureHeight(short textureId)
 {
     this->loadTextureFromDisk(textureId);
 
     return textureHeight[textureId];
 }
 
-int textures::getTextureWidth(short textureId)
+int Textures::getTextureWidth(short textureId)
 {
     this->loadTextureFromDisk(textureId);
 
     return textureWidth[textureId];
 }
 
-int textures::getTextureValueFromXandY(short textureId, short x, short y, short channel)
+int Textures::getTextureValueFromXandY(short textureId, short x, short y, short channel)
 {
     this->loadTextureFromDisk(textureId);
 
@@ -70,7 +70,7 @@ int textures::getTextureValueFromXandY(short textureId, short x, short y, short 
     return pixels[(y * textureHeight[textureId] + x) * 3 + channel];
 }
 
-void textures::loadTextureFromDisk(short textureId)
+void Textures::loadTextureFromDisk(short textureId)
 {
     if (textureMemory[textureId] == nullptr) {
         char* textures [5] = {

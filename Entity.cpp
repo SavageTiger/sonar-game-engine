@@ -1,17 +1,17 @@
-#include "entity.h"
-#include "resolution.h"
+#include "Entity.h"
+#include "Resolution.h"
 #include "math.h"
 #include <GL/gl.h>
 #include <cstdio>
 
-void entity::render(
+void Entity::render(
     float size,
     int spriteX,
     int spriteY,
     float distanceFromCieling,
-    player *player,
-    textures* textures,
-    wall** walls
+    Player *player,
+    Textures* textures,
+    Wall** walls
 ) {
     float spriteDistance = sqrt(pow(*player->getX() - spriteX, 2) + pow(*player->getY() - spriteY, 2));
 
@@ -91,7 +91,7 @@ void entity::render(
     }
 }
 
-float entity::getRadians(float degrees)
+float Entity::getRadians(float degrees)
 {
     return M_PI * degrees / 180;
 }

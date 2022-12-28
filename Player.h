@@ -1,9 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "map.h"
+#include "Map.h"
 
-class player {
+class Player {
 private:
     struct keysPressed {
         bool up;
@@ -24,13 +24,13 @@ private:
     void recalculateLookingDirection();
     void turnRight();
     void turnLeft();
-    void walk(bool forward, map* map);
+    void walk(bool forward, Map* map);
 
 public:
     void render();
 
     void buttonPressed(int keyCode, bool keyDown);
-    bool move(map* map);
+    bool move(Map* map);
 
     int* getLookingDirection();
     float getLookingDirectionInRadians();

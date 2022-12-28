@@ -1,12 +1,12 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
-#include "player.h"
-#include "wall.h"
+#include "Player.h"
+#include "Wall.h"
 
 
 
-class entity {
+class Entity {
 private:
     float getRadians(float degrees);
 
@@ -16,9 +16,9 @@ public:
         int spriteX,
         int spriteY,
         float distanceFromCieling,
-        player *player,
-        textures* textures,
-        wall** walls
+        Player *player,
+        Textures* textures,
+        Wall** walls
     );
 };
 

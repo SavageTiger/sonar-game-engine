@@ -1,11 +1,11 @@
-#include "player.h"
+#include "Player.h"
 #include <GL/freeglut.h>
 #include <math.h>
 #include <cstdio>
 
 #define TwicePI 6.2831853
 
-void player::render() {
+void Player::render() {
     glColor3f(0,1,1.0);
 
     recalculateLookingDirection();
@@ -30,7 +30,7 @@ void player::render() {
     return;
 }
 
-void player::buttonPressed(int keyCode, bool keyDown)
+void Player::buttonPressed(int keyCode, bool keyDown)
 {
     switch (keyCode) {
         case 100: // Left (100)
@@ -48,22 +48,22 @@ void player::buttonPressed(int keyCode, bool keyDown)
     }
 }
 
-bool player::move(map* map)
+bool Player::move(Map* map)
 {
     if (keyPressState.left == true) {
-        player::turnLeft();
+        Player::turnLeft();
     }
 
     if (keyPressState.right == true) {
-        player::turnRight();
+        Player::turnRight();
     }
 
     if (keyPressState.up == true) {
-        player::walk(true, map);
+        Player::walk(true, map);
     }
 
     if (keyPressState.down == true) {
-        player::walk(false, map);
+        Player::walk(false, map);
     }
 
     recalculateLookingDirection();
@@ -74,7 +74,7 @@ bool player::move(map* map)
            keyPressState.down == true;
 }
 
-void player::walk(bool forward, map* map)
+void Player::walk(bool forward, Map* map)
 {
     short collisionMargin = TILE_SIZE / 8;
     float movingDistance = 5;
@@ -101,54 +101,54 @@ void player::walk(bool forward, map* map)
     playerY = desiredY;
 }
 
-void player::turnRight()
+void Player::turnRight()
 {
     lookingDirection += 3;
 
     if (lookingDirection > 360) {
         lookingDirection = 0;
 
-        player::turnRight();
+        Player::turnRight();
 
         return;
     }
 }
 
-void player::turnLeft()
+void Player::turnLeft()
 {
     lookingDirection -= 3;
 
     if (lookingDirection < 0) {
         lookingDirection = 360;
 
-        player::turnLeft();
+        Player::turnLeft();
 
         return;
     }
 }
 
 
-int* player::getLookingDirection()
+int* Player::getLookingDirection()
 {
     return &lookingDirection;
 }
 
-float player::getLookingDirectionInRadians()
+float Player::getLookingDirectionInRadians()
 {
     return *this->getLookingDirection() * M_PI / 180.0;
 }
 
-int* player::getX()
+int* Player::getX()
 {
     return &playerX;
 }
 
-int* player::getY()
+int* Player::getY()
 {
     return &playerY;
 }
 
-void player::recalculateLookingDirection()
+void Player::recalculateLookingDirection()
 {
     lookingDirectionX = (playerX + (18 * cos(lookingDirection * TwicePI / 360)));
     lookingDirectionY = (playerY + (18 * sin(lookingDirection * TwicePI / 360)));

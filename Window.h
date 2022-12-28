@@ -2,7 +2,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-class window {
+class Window {
 public:
     void renderWindow();
 };

@@ -1,10 +1,10 @@
 #include <cstdlib>
 #include <GL/gl.h>
 #include <cstdio>
-#include "map.h"
-#include "textures.h"
+#include "Map.h"
+#include "Textures.h"
 
-void map::renderWall(int row, int column, textures* textures) {
+void Map::renderWall(int row, int column, Textures* textures) {
     glEnable(GL_TEXTURE_2D);
 
     textures->loadTexture(0);
@@ -26,7 +26,7 @@ void map::renderWall(int row, int column, textures* textures) {
     glDisable(GL_TEXTURE_2D);
 }
 
-void map::renderFloor(int row, int column, textures* textures) {
+void Map::renderFloor(int row, int column, Textures* textures) {
     glEnable(GL_TEXTURE_2D);
 
     textures->loadTexture(1);
@@ -49,9 +49,9 @@ void map::renderFloor(int row, int column, textures* textures) {
     glDisable(GL_TEXTURE_2D);
 }
 
-void map::renderMap(const char* mapName, textures* textures) {
+void Map::renderMap(const char* mapName, Textures* textures) {
     if (mapLoaded == false) {
-        map::loadMap(mapName);
+        Map::loadMap(mapName);
 
         mapLoaded = true;
     }
@@ -60,19 +60,19 @@ void map::renderMap(const char* mapName, textures* textures) {
         for (int c = 0; c < layout[r].size(); c++) {
             switch (layout[r][c]) {
                 case 48:
-                    map::renderFloor(r, c, textures);
+                    Map::renderFloor(r, c, textures);
                     break;
 
                 case 49:
                 case 50:
-                    map::renderWall(r, c, textures);
+                    Map::renderWall(r, c, textures);
                     break;
             }
         }
     }
 }
 
-bool map::isWall(int x, int y, short margin)
+bool Map::isWall(int x, int y, short margin)
 {
     int column = x / TILE_SIZE;
     int row = y / TILE_SIZE;
@@ -101,7 +101,7 @@ bool map::isWall(int x, int y, short margin)
     return layout[row][column] == 49 || layout[row][column] == 50;
 }
 
-float map::wallThickness(int x, int y)
+float Map::wallThickness(int x, int y)
 {
     int column = x / TILE_SIZE;
     int row = y / TILE_SIZE;
@@ -109,7 +109,7 @@ float map::wallThickness(int x, int y)
     return layout[row][column] == 50 ? 0.5 : 1;
 }
 
-int map::getTextureId(float x, float y)
+int Map::getTextureId(float x, float y)
 {
     int column = x / TILE_SIZE;
     int row = y / TILE_SIZE;
@@ -117,7 +117,7 @@ int map::getTextureId(float x, float y)
     return layout[row][column] == 49 ? 0 : 1;
 }
 
-void map::loadMap(const char* mapName) {
+void Map::loadMap(const char* mapName) {
     int fileChar;
     char mapPath[128] = {0};
 

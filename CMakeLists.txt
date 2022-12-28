@@ -3,7 +3,7 @@ project(threedee)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(threedee main.cpp window.cpp window.h player.cpp player.h map.cpp map.h raycaster.cpp raycaster.h wall.cpp wall.h textures.cpp textures.h floor.cpp floor.h ceiling.h cieling.cpp resolution.h entity.cpp entity.h entities.cpp entities.h)
+add_executable(threedee main.cpp Window.cpp Window.h Player.cpp Player.h Map.cpp Map.h Raycaster.cpp Raycaster.h Wall.cpp Wall.h Textures.cpp Textures.h Floor.cpp Floor.h Ceiling.h Ceiling.cpp Resolution.h Entity.cpp Entity.h Entities.cpp Entities.h)
 
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})

@@ -1,4 +1,4 @@
-#include "window.h"
+#include "Window.h"
 
 #ifdef __APPLE__
 #include <GL/freeglut_std.h>
@@ -6,7 +6,7 @@
 #include <GL/glut.h>
 #endif
 
-void window::renderWindow() {
+void Window::renderWindow() {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(950, 640);
     glutCreateWindow("Ray-casting experiment");

@@ -2,9 +2,9 @@
 #ifndef WALL_H
 #define WALL_H
 
-#include "textures.h"
+#include "Textures.h"
 
-class wall {
+class Wall {
 public:
     short textureId;
     int columnOffset;
@@ -16,8 +16,8 @@ public:
     int wallHeight;
     int lineOffsetFromTop;
 
-    wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical);
-    void render(textures* textures);
+    Wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical);
+    void render(Textures* textures);
 };
 
 # endif

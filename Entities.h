@@ -1,9 +1,9 @@
 #ifndef THREEDEE_ENTITIES_H
 #define THREEDEE_ENTITIES_H
 
-#include "player.h"
-#include "wall.h"
-#include "textures.h"
+#include "Player.h"
+#include "Wall.h"
+#include "Textures.h"
 
 struct entityProperties {
     float size;
@@ -12,17 +12,17 @@ struct entityProperties {
     float distanceFromCieling;
 };
 
-class entities {
+class Entities {
 
 private:
     entityProperties entityMemory[128];
 
-    void loadEntities(map* map);
+    void loadEntities(Map* map);
 
 public:
-    entities(map *map);
+    Entities(Map *map);
 
-    void render(player *player, textures* textures, wall** walls);
+    void render(Player *player, Textures* textures, Wall** walls);
 
 };
 
