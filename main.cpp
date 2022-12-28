@@ -1,4 +1,3 @@
-#include <GL/glut.h>
 #include <cstdio>
 #include "window.h"
 #include "player.h"
@@ -7,6 +6,12 @@
 #include "ceiling.h"
 #include "entities.h"
 #include "resolution.h"
+
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
 int currentFPS = 0;
 double previousFrameTime = 0.0;

@@ -1,4 +1,3 @@
-#include <GL/gl.h>
 #include <cmath>
 #include <cstdio>
 #include "player.h"
@@ -6,6 +5,12 @@
 #include "map.h"
 #include "wall.h"
 #include "resolution.h"
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 #define MAX_DEPTH 10
 #define RIGHT 0

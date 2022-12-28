@@ -1,6 +1,11 @@
-#include <GL/gl.h>
 #include "textures.h"
 #include <cstdio>
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 void textures::loadTexture(short textureId)
 {

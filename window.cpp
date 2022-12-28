@@ -1,5 +1,10 @@
-#include <GL/freeglut.h>
 #include "window.h"
+
+#ifdef __APPLE__
+#include <GL/freeglut_std.h>
+#else
+#include <GL/glut.h>
+#endif
 
 void window::renderWindow() {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
