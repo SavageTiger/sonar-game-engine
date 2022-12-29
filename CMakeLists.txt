@@ -13,6 +13,13 @@ find_package(SDL2_image REQUIRED)
 include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 target_link_libraries(threedee ${SDL2_IMAGE_LIBRARIES})
 
+if (APPLE)
+    find_library(OPENGL_FRAMEWORK GLUT)
+    find_library(OPENGL_FRAMEWORK OpenGL)
+
+    target_link_libraries(threedee "-framework OpenGL -framework GLUT")
+endif()
+
 set(OpenGlLinkers -lglut -lGL -lSDL2 -lSDL2_IMAGE)
 
 target_link_libraries(threedee ${OpenGlLinkers})
