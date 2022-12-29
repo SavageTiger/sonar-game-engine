@@ -64,6 +64,7 @@ void map::renderMap(const char* mapName, textures* textures) {
                     break;
 
                 case 49:
+                case 50:
                     map::renderWall(r, c, textures);
                     break;
             }
@@ -140,7 +141,7 @@ void map::loadMap(const char* mapName) {
             layout.push_back({});
         }
 
-        if (fileChar == 49 || fileChar == 48) {
+        if (fileChar == 49 || fileChar == 48 || fileChar == 50) {
             layout[row].push_back(fileChar);
 
             column++;
