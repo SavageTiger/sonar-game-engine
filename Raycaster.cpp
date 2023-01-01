@@ -81,7 +81,13 @@ Wall** Raycaster::castRays(Player* player, Map* map)
 
         int rayAngle = fixAngleOverflow(*player->getLookingDirection() - (int)angle);
 
+
+
         if ((horizontalDistance < verticalDistance || verticalHitX == -1) && horizontalHitX != -1) {
+            // Correct the horizontal fishbowl effect.
+            horizontalDistance = horizontalDistance * cos(getRadians(rayAngle));
+
+            float tileOffset = fmod(horizontalHitX / TILE_SIZE, 1);
 
             glColor3f(1, 1, 0);
             glLineWidth(1);
@@ -89,11 +95,6 @@ Wall** Raycaster::castRays(Player* player, Map* map)
             glVertex2i(*player->getX(), *player->getY());
             glVertex2i(horizontalHitX, horizontalHitY);
             glEnd();
-
-            float tileOffset = horizontalHitX / TILE_SIZE;
-
-            // Correct the horizontal fishbowl effect.
-            horizontalDistance = horizontalDistance * cos(getRadians(rayAngle));
 
             walls[i] = new Wall(
                 map->getTextureId(horizontalHitX, horizontalHitY),
@@ -105,21 +106,20 @@ Wall** Raycaster::castRays(Player* player, Map* map)
                 false
             );
         } else {
+            // Correct the vertical fishbowl effect.
+            verticalDistance = verticalDistance * cos(getRadians(rayAngle));
+
             glColor3f(0,1,0);
             glLineWidth(1);
             glBegin(GL_LINES);
-
             glVertex2i(*player->getX(), *player->getY());
             glVertex2i(verticalHitX, verticalHitY);
             glEnd();
 
-            float tileOffset = verticalHitY / TILE_SIZE;
-
-            // Correct the vertical fishbowl effect.
-            verticalDistance = verticalDistance * cos(getRadians(rayAngle));
+            float tileOffset = fmod(verticalHitY / TILE_SIZE, 1);
 
             walls[i] = new Wall(
-                map->getTextureId(horizontalHitX, horizontalHitY),
+                map->getTextureId(verticalHitX, verticalHitY),
                 i,
                 verticalHitX,
                 verticalHitY,
@@ -151,12 +151,15 @@ int* Raycaster::sonarRight(Player* player, Map* map, float angle)
         int x = (playerIsOnColumn * TILE_SIZE) + (i * TILE_SIZE);
         int y = ((*player->getY()) + ((nextTile * TILE_SIZE) - *player->getX()) * tanValue);
 
-        if (map->isWall(x + 1, y) == true ) {
+        if (map->isWall(x + 1, y) == true) {
             if (map->wallThickness(x + 1, y) != 1) {
-                x += (TILE_SIZE * map->wallThickness(x + 1, y));
+                float adjustment = (TILE_SIZE * map->wallThickness(x + 1, y));
+
+                y = ((*player->getY()) + ((nextTile * TILE_SIZE + adjustment) - *player->getX()) * tanValue);
+                x += adjustment;
             }
 
-            returnValue[0] = x;
+            returnValue[0] = x + 1;
             returnValue[1] = y;
 
             return returnValue;
@@ -185,10 +188,13 @@ int* Raycaster::sonarLeft(Player* player, Map* map, float angle)
 
         if (map->isWall(x - 1, y) == true) {
             if (map->wallThickness(x - 1, y) != 1) {
-                x -= (TILE_SIZE * map->wallThickness(x - 1, y));
+                float adjustment = (TILE_SIZE * map->wallThickness(x - 1, y));
+
+                y = ((*player->getY()) + ((previousTile * TILE_SIZE - adjustment) - *player->getX()) * tanValue);
+                x -= adjustment;
             }
 
-            returnValue[0] = x;
+            returnValue[0] = x - 1;
             returnValue[1] = y;
 
             return returnValue;
@@ -216,7 +222,10 @@ int* Raycaster::sonarUp(Player* player, Map* map, float angle)
 
         if (map->isWall(x, y - 1) == true) {
             if (map->wallThickness(x, y - 1) != 1) {
-                y -= (TILE_SIZE * map->wallThickness(x, y - 1));
+                float adjustment = (TILE_SIZE * map->wallThickness(x, y - 1));
+
+                y -= adjustment;
+                x = (*player->getX() - (((previousTile * TILE_SIZE - adjustment) - *player->getY()) * tanValue));
             }
 
             returnValue[0] = x;
@@ -247,7 +256,10 @@ int* Raycaster::sonarDown(Player* player, Map* map, float angle)
 
         if (map->isWall(x, y + 1) == true) {
             if (map->wallThickness(x, y + 1) != 1) {
-                y += (TILE_SIZE * map->wallThickness(x, y + 1));
+                float adjustment = (TILE_SIZE * map->wallThickness(x, y + 1));
+
+                y += adjustment;
+                x = ((*player->getX()) - (((nextTile * TILE_SIZE + adjustment) - *player->getY()) * tanValue));
             }
 
             returnValue[0] = x;

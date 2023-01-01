@@ -106,7 +106,7 @@ float Map::wallThickness(int x, int y)
     int column = x / TILE_SIZE;
     int row = y / TILE_SIZE;
 
-    return layout[row][column] == 50 ? 0.5 : 1;
+    return layout[row][column] == 50 ? 0.4 : 1;
 }
 
 int Map::getTextureId(float x, float y)
@@ -114,7 +114,7 @@ int Map::getTextureId(float x, float y)
     int column = x / TILE_SIZE;
     int row = y / TILE_SIZE;
 
-    return layout[row][column] == 49 ? 0 : 1;
+    return layout[row][column] == 50 ? 4 : 0;
 }
 
 void Map::loadMap(const char* mapName) {
