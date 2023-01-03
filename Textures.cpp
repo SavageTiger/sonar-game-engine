@@ -85,6 +85,8 @@ void Textures::loadTextureFromDisk(short textureId)
 
         if (originalSurface == nullptr) {
             printf("Unable to load textures '%s'", textures[textureId]);
+
+            exit(1);
         }
 
         SDL_Surface *normalizedSurface = SDL_ConvertSurfaceFormat(originalSurface, SDL_PIXELFORMAT_RGB24, 0);
