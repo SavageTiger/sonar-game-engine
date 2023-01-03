@@ -10,18 +10,16 @@ private:
         bool down;
         bool left;
         bool right;
+        bool space;
     };
 
     keysPressed keyPressState;
 
-    int playerX = 80;
-    int playerY = 180;
+    int playerX = 151;
+    int playerY = 388;
 
-    int lookingDirection  = 270;
-    int lookingDirectionX = 0;
-    int lookingDirectionY = 0;
+    int lookingDirection  = 78;
 
-    void recalculateLookingDirection();
     void turnRight();
     void turnLeft();
     void walk(bool forward, Map* map);
@@ -31,6 +29,7 @@ public:
 
     void buttonPressed(int keyCode, bool keyDown);
     bool move(Map* map);
+    bool interact(Map* map);
 
     int* getLookingDirection();
     float getLookingDirectionInRadians();

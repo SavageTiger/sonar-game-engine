@@ -1,14 +1,9 @@
 #include "Player.h"
 #include <GL/freeglut.h>
 #include <math.h>
-#include <cstdio>
-
-#define TwicePI 6.2831853
 
 void Player::render() {
     glColor3f(0,1,1.0);
-
-    recalculateLookingDirection();
 
     // The player
     glColor3f(0,0,1.0);
@@ -19,20 +14,16 @@ void Player::render() {
     glVertex2f(playerX - 2.5, playerY + 2.5);
     glEnd();
 
-    // Looking direction
-    glColor3f(1,0,0);
-    glLineWidth(4);
-    glBegin(GL_LINES);
-    glVertex2i(lookingDirectionX, lookingDirectionY);
-    glVertex2i(playerX, playerY);
-    glEnd();
-
     return;
 }
 
 void Player::buttonPressed(int keyCode, bool keyDown)
 {
     switch (keyCode) {
+        case 32: // Space (32)
+            keyPressState.space = keyDown;
+            break;
+
         case 100: // Left (100)
             keyPressState.left = keyDown;
             break;
@@ -66,12 +57,19 @@ bool Player::move(Map* map)
         Player::walk(false, map);
     }
 
-    recalculateLookingDirection();
-
     return keyPressState.left == true ||
            keyPressState.right == true ||
            keyPressState.up == true ||
            keyPressState.down == true;
+}
+
+bool Player::interact(Map* map)
+{
+    if (keyPressState.space == false) {
+        return false;
+    }
+
+    return true;
 }
 
 void Player::walk(bool forward, Map* map)
@@ -80,7 +78,6 @@ void Player::walk(bool forward, Map* map)
     float movingDistance = 5;
 
     float lookingDirectionRadians = getLookingDirectionInRadians();
-
     short movementDirection = forward ? 1 : -1;
 
     int
@@ -146,10 +143,4 @@ int* Player::getX()
 int* Player::getY()
 {
     return &playerY;
-}
-
-void Player::recalculateLookingDirection()
-{
-    lookingDirectionX = (playerX + (18 * cos(lookingDirection * TwicePI / 360)));
-    lookingDirectionY = (playerY + (18 * sin(lookingDirection * TwicePI / 360)));
 }
