@@ -1,10 +1,10 @@
 #include <cstdlib>
-#include <GL/gl.h>
+#include <algorithm>
 #include <cstdio>
 #include "Map.h"
 #include "Textures.h"
 
-void Map::renderWall(int row, int column, Textures* textures) {
+/*void Map::renderWall(int row, int column, Textures* textures) {
     glEnable(GL_TEXTURE_2D);
 
     textures->loadTexture(0);
@@ -70,12 +70,12 @@ void Map::renderMap(const char* mapName, Textures* textures) {
             }
         }
     }
-}
+}*/
 
 bool Map::isWall(int x, int y, short margin)
 {
-    int column = x / TILE_SIZE;
-    int row = y / TILE_SIZE;
+    short column = x / TILE_SIZE;
+    short row = y / TILE_SIZE;
 
     if (row < 0 || column < 0) {
         return false;
@@ -90,39 +90,95 @@ bool Map::isWall(int x, int y, short margin)
     }
 
     if (margin > 0 && (
-        isWall(x - margin, y - margin) ||
-        isWall(x + margin, y - margin) ||
-        isWall(x - margin, y + margin) ||
-        isWall(x + margin, y + margin))
+        isWall(x - margin, y - margin) == true ||
+        isWall(x + margin, y - margin) == true ||
+        isWall(x - margin, y + margin) == true ||
+        isWall(x + margin, y + margin) == true)
     ) {
         return true;
     }
 
-    return layout[row][column] == 49 || layout[row][column] == 50;
+    MapTile* mapTile = &layout[row][column];
+
+    if (mapTile->isFloor()) {
+        return false;
+    }
+
+    if (mapTile->isDoor() && mapTile->isFullyOpenDoor()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool Map::openDoor(int x, int y)
+{
+    short column = x / TILE_SIZE;
+    short row = y / TILE_SIZE;
+
+    short rowCount = layout.size();
+    short columnCount = layout[row].size();
+
+    std::vector<MapTile*> possibleDoors;
+
+    possibleDoors.push_back(&layout[row][column]);
+
+    if (row != 0) {
+        possibleDoors.push_back(&layout[row - 1][column]);
+    }
+
+    if (row + 1 <= rowCount) {
+        possibleDoors.push_back(&layout[row + 1][column]);
+    }
+
+    if (column != 0) {
+        possibleDoors.push_back(&layout[row][column - 1]);
+    }
+
+    if (column + 1 <= columnCount) {
+        possibleDoors.push_back(&layout[row][column + 1]);
+    }
+
+    for (auto& possibleDoor : possibleDoors) {
+        if (possibleDoor->isDoor() && possibleDoor->isOpenDoor() == false) {
+            possibleDoor->openDoor();
+
+            activeDoors.push_back(possibleDoor);
+        }
+    }
+}
+
+bool Map::animateDoors()
+{
+    for (auto& door : activeDoors) {
+        door->increaseDoorOpenRatio();
+    }
+
+    return activeDoors.size() > 0;
 }
 
 float Map::wallThickness(int x, int y)
 {
-    int column = x / TILE_SIZE;
-    int row = y / TILE_SIZE;
+    short column = x / TILE_SIZE;
+    short row = y / TILE_SIZE;
 
-    return layout[row][column] == 50 ? 0.4 : 1;
+    return layout[row][column].isDoor() ? 0.4 : 1;
 }
 
 int Map::getTextureId(float x, float y)
 {
-    int column = x / TILE_SIZE;
-    int row = y / TILE_SIZE;
+    short column = x / TILE_SIZE;
+    short row = y / TILE_SIZE;
 
-    return layout[row][column] == 50 ? 4 : 0;
+    return layout[row][column].isDoor() ? 4 : 0;
 }
 
 void Map::loadMap(const char* mapName) {
-    int fileChar;
+    char fileChar;
     char mapPath[128] = {0};
 
-    int row = 0;
-    int column = 0;
+    short row = 0;
+    short column = 0;
 
     snprintf(mapPath, 128, "./maps/%s.map", mapName);
 
@@ -142,7 +198,9 @@ void Map::loadMap(const char* mapName) {
         }
 
         if (fileChar == 49 || fileChar == 48 || fileChar == 50) {
-            layout[row].push_back(fileChar);
+            MapTile mapTile = MapTile(atoi(&fileChar));
+
+            layout[row].push_back(mapTile);
 
             column++;
         }

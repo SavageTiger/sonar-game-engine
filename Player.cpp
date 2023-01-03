@@ -69,6 +69,8 @@ bool Player::interact(Map* map)
         return false;
     }
 
+    map->openDoor(playerX, playerY);
+
     return true;
 }
 
@@ -78,6 +80,7 @@ void Player::walk(bool forward, Map* map)
     float movingDistance = 5;
 
     float lookingDirectionRadians = getLookingDirectionInRadians();
+
     short movementDirection = forward ? 1 : -1;
 
     int
