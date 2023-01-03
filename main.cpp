@@ -13,8 +13,10 @@
 #include <GL/glut.h>
 #endif
 
-int currentFPS = 0;
 double previousFrameTime = 0.0;
+short currentFPS = 0;
+short targetFPS = 60;
+short gameTicksPerSecond = 30;
 
 Textures G_TEXTURES;
 Player G_PLAYER;
@@ -44,7 +46,7 @@ void renderPipeline()
 {
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-   G_MAP.renderMap("test", &G_TEXTURES);
+   G_MAP.loadMap("test");
 
    Wall** walls = G_RAYCASTER.castRays(
        &G_PLAYER,
@@ -68,26 +70,34 @@ void renderPipeline()
 
     delete walls;
 
-    G_PLAYER.move(&G_MAP); // FIXME, move back to game-tick
-
     glutSwapBuffers();
+}
+
+void renderFrame(int val)
+{
+    updateFPS();
+
     glutPostRedisplay();
+
+    glutTimerFunc(1000 / targetFPS, renderFrame, 0);
 }
 
 void gameTick(int val)
 {
+    G_PLAYER.move(&G_MAP);
+    G_PLAYER.interact(&G_MAP);
+    G_MAP.animateDoors();
 
-    updateFPS();
-
-    glutTimerFunc(16, gameTick, 0);
+    glutTimerFunc(1000 / gameTicksPerSecond, gameTick, 0);
 }
 
-void registerKeyPress(int key, int x, int y)
+
+void registerKeyPress(unsigned char key, int x, int y)
 {
     G_PLAYER.buttonPressed(key, true);
 }
 
-void registerKeyPressUp(int key, int x, int y)
+void registerKeyPressUp(unsigned char key, int x, int y)
 {
     G_PLAYER.buttonPressed(key, false);
 }
@@ -102,9 +112,14 @@ int main(int argc, char* argv[])
 
     window.renderWindow();
 
+    // Register keyboard listeners
+    glutKeyboardFunc(registerKeyPress);
+    glutKeyboardUpFunc(registerKeyPressUp);
+    glutSpecialFunc(reinterpret_cast<void (*)(int, int, int)>(registerKeyPress));
+    glutSpecialUpFunc(reinterpret_cast<void (*)(int, int, int)>(registerKeyPressUp));
+
     glutDisplayFunc(renderPipeline);
-    glutSpecialFunc(registerKeyPress);
-    glutSpecialUpFunc(registerKeyPressUp);
-    glutTimerFunc(0, gameTick, 0);
+    glutTimerFunc(1000 / gameTicksPerSecond, gameTick, 0);
+    glutTimerFunc(1000 / targetFPS, renderFrame, 0);
     glutMainLoop();
 }
