@@ -8,10 +8,10 @@
 
 void Window::renderWindow() {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(950, 640);
-    glutCreateWindow("Ray-casting experiment");
+    glutInitWindowSize(640, 640);
+    glutCreateWindow("Sonar game engine");
     glClearColor(0.5,0.5,0.5,0.0);
-    gluOrtho2D(0, 950, 640, 0);
+    glEnable(GL_POINT_SMOOTH);
 
     return;
 }

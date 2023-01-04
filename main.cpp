@@ -119,14 +119,29 @@ void registerKeyPressUp(unsigned char key, int x, int y)
     G_PLAYER.buttonPressed(key, false);
 }
 
+void onResize(int width, int height)
+{
+    int resolution = fmin(width, height);
+
+    int xOffset = (width / 2) - resolution / 2;
+    int yOffset = (height / 2) - resolution / 2;
+
+    glViewport(xOffset, yOffset, resolution, resolution);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    gluOrtho2D(0, 640, 640, 0);
+}
+
+
 int main(int argc, char* argv[])
 {
-    Window window;
-
     setvbuf(stdout, NULL, _IONBF, 0);
 
     glutInit(&argc, argv);
 
+    Window window;
     window.renderWindow();
 
     G_MAP.loadMap("test");
@@ -140,5 +155,7 @@ int main(int argc, char* argv[])
     glutDisplayFunc(renderPipeline);
     glutTimerFunc(1000 / gameTicksPerSecond, gameTick, 0);
     glutTimerFunc(1000 / targetFPS, renderFrame, 0);
+
+    glutReshapeFunc(onResize);
     glutMainLoop();
 }
