@@ -32,17 +32,17 @@ void Textures::loadTexture(short textureId)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-int Textures::getTextureRFromXandY(short textureId, short x, short y)
+short Textures::getTextureRFromXandY(short textureId, short x, short y)
 {
     return this->getTextureValueFromXandY(textureId, x, y, 0);
 }
 
-int Textures::getTextureGFromXandY(short textureId, short x, short y)
+short Textures::getTextureGFromXandY(short textureId, short x, short y)
 {
     return this->getTextureValueFromXandY(textureId, x, y, 1);
 }
 
-int Textures::getTextureBFromXandY(short textureId, short x, short y)
+short Textures::getTextureBFromXandY(short textureId, short x, short y)
 {
     return this->getTextureValueFromXandY(textureId, x, y, 2);
 }
@@ -61,13 +61,13 @@ int Textures::getTextureWidth(short textureId)
     return textureWidth[textureId];
 }
 
-int Textures::getTextureValueFromXandY(short textureId, short x, short y, short channel)
+short Textures::getTextureValueFromXandY(short textureId, short x, short y, short channel)
 {
     this->loadTextureFromDisk(textureId);
 
-    Uint8* pixels = (Uint8*)textureMemory[textureId]->pixels;
+    Uint8* pixel = (Uint8*)textureMemory[textureId]->pixels + y * textureMemory[textureId]->pitch + x * 3;
 
-    return pixels[(y * textureHeight[textureId] + x) * 3 + channel];
+    return pixel[channel];
 }
 
 void Textures::loadTextureFromDisk(short textureId)
@@ -103,3 +103,4 @@ void Textures::loadTextureFromDisk(short textureId)
         SDL_FreeSurface(normalizedSurface);
     }
 }
+

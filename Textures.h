@@ -8,7 +8,7 @@ class Textures {
 private:
     SDL_Surface* textureMemory[64];
     void loadTextureFromDisk(short textureId);
-    int getTextureValueFromXandY(short textureId, short x, short y, short channel);
+    short getTextureValueFromXandY(short textureId, short x, short y, short channel);
 
     int textureHeight[64];
     int textureWidth[64];
@@ -16,9 +16,9 @@ private:
 public:
     void loadTexture(short textureId);
 
-    int getTextureRFromXandY(short textureId, short x, short y);
-    int getTextureGFromXandY(short textureId, short x, short y);
-    int getTextureBFromXandY(short textureId, short x, short y);
+    short getTextureRFromXandY(short textureId, short x, short y);
+    short getTextureGFromXandY(short textureId, short x, short y);
+    short getTextureBFromXandY(short textureId, short x, short y);
 
     int getTextureHeight(short textureId);
     int getTextureWidth(short textureId);
