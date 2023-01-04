@@ -27,6 +27,10 @@ void Wall::render(Textures* textures) {
 
     short textureX = this->tileOffset * TILE_SIZE;
 
+    if (mapTile->isDoor() && mapTile->isOpenDoor()) {
+        textureX += mapTile->getDoorOpenRatio() * TILE_SIZE;
+    }
+
     short textureId = mapTile->getTextureId();
 
     for (int i = 0; i < this->wallHeight; i++) {

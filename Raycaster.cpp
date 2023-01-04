@@ -149,12 +149,22 @@ int* Raycaster::sonarRight(Player* player, Map* map, float angle)
         int x = (playerIsOnColumn * TILE_SIZE) + (i * TILE_SIZE);
         int y = ((*player->getY()) + ((nextTile * TILE_SIZE) - *player->getX()) * tanValue);
 
-        if (map->isWall(x + 1, y) == true) {
-            if (map->wallThickness(x + 1, y) != 1) {
-                float adjustment = (TILE_SIZE * map->wallThickness(x + 1, y));
+        MapTile* mapTile = map->getMapTile(x + 1, y);
+
+        if (mapTile != nullptr && (mapTile->isWall() || mapTile->isDoor())) {
+            if (mapTile->thickness() != 1) {
+                float adjustment = (TILE_SIZE * mapTile->thickness());
 
                 y = ((*player->getY()) + ((nextTile * TILE_SIZE + adjustment) - *player->getX()) * tanValue);
                 x += adjustment;
+            }
+
+            if (mapTile->isDoor() == true && mapTile->isOpenDoor() == true) {
+                float tileOffset = fmod((float)y / TILE_SIZE, 1);
+
+                if (tileOffset > 1.0 - mapTile->getDoorOpenRatio()) {
+                    continue;
+                }
             }
 
             returnValue[0] = x + 1;
@@ -194,6 +204,14 @@ int* Raycaster::sonarLeft(Player* player, Map* map, float angle)
                 x -= adjustment;
             }
 
+            if (mapTile->isDoor() == true && mapTile->isOpenDoor() == true) {
+                float tileOffset = fmod((float)y / TILE_SIZE, 1);
+
+                if (tileOffset > 1.0 - mapTile->getDoorOpenRatio()) {
+                    continue;
+                }
+            }
+
             returnValue[0] = x - 1;
             returnValue[1] = y;
 
@@ -230,6 +248,14 @@ int* Raycaster::sonarUp(Player* player, Map* map, float angle)
                 x = (*player->getX() - (((previousTile * TILE_SIZE - adjustment) - *player->getY()) * tanValue));
             }
 
+            if (mapTile->isDoor() == true && mapTile->isOpenDoor() == true) {
+                float tileOffset = fmod((float)x / TILE_SIZE, 1);
+
+                if (1.0 - tileOffset < mapTile->getDoorOpenRatio()) {
+                    continue;
+                }
+            }
+
             returnValue[0] = x;
             returnValue[1] = y - 1;
 
@@ -264,6 +290,14 @@ int* Raycaster::sonarDown(Player* player, Map* map, float angle)
 
                 y += adjustment;
                 x = ((*player->getX()) - (((nextTile * TILE_SIZE + adjustment) - *player->getY()) * tanValue));
+            }
+
+            if (mapTile->isDoor() == true && mapTile->isOpenDoor() == true) {
+                float tileOffset = fmod((float)x / TILE_SIZE, 1);
+
+                if (1.0 - tileOffset < mapTile->getDoorOpenRatio()) {
+                    continue;
+                }
             }
 
             returnValue[0] = x;
