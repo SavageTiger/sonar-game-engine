@@ -35,60 +35,62 @@ void Entity::render(
 
     bool objectVisible = (fabs(objectAngle) < getRadians(FOV) / 2) && spriteDistance > 40;
 
-    int spriteHeight = textures->getTextureWidth(3);
-    int spriteWidth = textures->getTextureHeight(3);
+    int spriteHeight = textures->getTextureHeight(3);
+    int spriteWidth = textures->getTextureWidth(3);
 
-    if (objectVisible) {
-        float screenHeight = RESOLUTION_HEIGHT * TILE_SIZE;
-
-        float objectCeiling = (RESOLUTION_HEIGHT / 2) - (screenHeight / spriteDistance / 2);
-        float objectFloor = objectCeiling + (screenHeight / spriteDistance / 2);
-
-        float objectAspectRatio = ((float)spriteHeight / (float)spriteWidth);
-
-        float objectHeight = (objectFloor - objectCeiling) * size;
-        float objectWidth = objectHeight / objectAspectRatio;
-
-        int objectMiddle = (.5 * (objectAngle / (getRadians(FOV) / 2)) + .5) * RESOLUTION_WIDTH;
-
-        glPointSize(PAINT_SIZE * 2);
-        glBegin(GL_POINTS);
-
-        int renderRowOffset = (objectFloor - objectCeiling) * distanceFromCieling;
-
-        for (int renderColumn = 0; renderColumn < objectWidth; renderColumn++) {
-            for (int renderRow = renderRowOffset; renderRow < objectHeight + renderRowOffset; renderRow++) {
-                int columnX = objectMiddle + renderColumn - (objectWidth / 2);
-
-                if (columnX <= 0 || columnX >= RESOLUTION_WIDTH) {
-                    continue;
-                }
-
-                if (walls[columnX]->distance < spriteDistance && (spriteDistance - walls[columnX]->distance) > 100) {
-                    continue;
-                }
-
-                short
-                    textureX = (spriteWidth / objectWidth) * renderColumn,
-                    textureY = (spriteHeight / objectHeight) * (renderRow - renderRowOffset);
-
-                int
-                    colorR = textures->getTextureRFromXandY(3, textureX, textureY),
-                    colorG = textures->getTextureGFromXandY(3, textureX, textureY),
-                    colorB = textures->getTextureBFromXandY(3, textureX, textureY);
-
-                if (colorR == 255 && colorG == 0 && colorB == 255) {
-                    continue;
-                }
-
-                glColor3ub(colorR, colorG, colorB);
-
-                glVertex2i(columnX * PAINT_SIZE, objectCeiling + renderRow * PAINT_SIZE);
-            }
-        }
-
-        glEnd();
+    if (objectVisible == false) {
+        return;
     }
+
+    float screenHeight = RESOLUTION_HEIGHT * TILE_SIZE;
+
+    float objectCeiling = (RESOLUTION_HEIGHT / 2) - (screenHeight / spriteDistance / 2);
+    float objectFloor = objectCeiling + (screenHeight / spriteDistance / 2);
+
+    float objectAspectRatio = ((float)spriteHeight / (float)spriteWidth);
+
+    float objectHeight = (objectFloor - objectCeiling) * size;
+    float objectWidth = objectHeight / objectAspectRatio;
+
+    int objectMiddle = (.5 * (objectAngle / (getRadians(FOV) / 2)) + .5) * RESOLUTION_WIDTH;
+
+    glPointSize(PAINT_SIZE * 2);
+    glBegin(GL_POINTS);
+
+    int renderRowOffset = (objectFloor - objectCeiling) * distanceFromCieling;
+
+    for (int renderColumn = 0; renderColumn < objectWidth; renderColumn++) {
+        for (int renderRow = renderRowOffset; renderRow < objectHeight + renderRowOffset; renderRow++) {
+            int columnX = objectMiddle + renderColumn - (objectWidth / 2);
+
+            if (columnX <= 0 || columnX >= RESOLUTION_WIDTH) {
+                continue;
+            }
+
+            if (walls[columnX]->distance < spriteDistance && (spriteDistance - walls[columnX]->distance) > 100) {
+                continue;
+            }
+
+            short
+                textureX = (spriteWidth / objectWidth) * renderColumn,
+                textureY = (spriteHeight / objectHeight) * (renderRow - renderRowOffset);
+
+            int
+                colorR = textures->getTextureRFromXandY(3, textureX, textureY),
+                colorG = textures->getTextureGFromXandY(3, textureX, textureY),
+                colorB = textures->getTextureBFromXandY(3, textureX, textureY);
+
+            if (colorR == 255 && colorG == 0 && colorB == 255) {
+                continue;
+            }
+
+            glColor3ub(colorR, colorG, colorB);
+
+            glVertex2i(columnX * PAINT_SIZE, objectCeiling + renderRow * PAINT_SIZE);
+        }
+    }
+
+    glEnd();
 }
 
 float Entity::getRadians(float degrees)
