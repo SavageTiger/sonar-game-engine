@@ -41,11 +41,21 @@ void MapTile::openDoor()
 void MapTile::increaseDoorOpenRatio()
 {
     if (doorOpenRatio < .9) {
-        doorOpenRatio += 0.015;
+        doorOpenRatio += 0.010;
     }
 }
 
 float MapTile::getDoorOpenRatio()
 {
     return doorOpenRatio;
+}
+
+float MapTile::thickness()
+{
+    return this->isDoor() ? 0.4 : 1;
+}
+
+short MapTile::getTextureId()
+{
+    return this->isDoor() ? 4 : 0;
 }

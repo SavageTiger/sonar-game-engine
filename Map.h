@@ -20,10 +20,9 @@ private:
 public:
     void loadMap(const char* mapName);
     bool isWall(int x, int y, short margin = 0);
+    MapTile* getMapTile(int x, int y);
     bool openDoor(int x, int y);
     bool animateDoors();
-    float wallThickness(int row, int column);
-    int getTextureId(float x, float y);
 
 };
 #endif

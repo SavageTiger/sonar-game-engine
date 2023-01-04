@@ -74,21 +74,6 @@ void Map::renderMap(const char* mapName, Textures* textures) {
 
 bool Map::isWall(int x, int y, short margin)
 {
-    short column = x / TILE_SIZE;
-    short row = y / TILE_SIZE;
-
-    if (row < 0 || column < 0) {
-        return false;
-    }
-
-    if (row >= layout.size()) {
-        return false;
-    }
-
-    if (column >= layout[row].size()) {
-        return false;
-    }
-
     if (margin > 0 && (
         isWall(x - margin, y - margin) == true ||
         isWall(x + margin, y - margin) == true ||
@@ -98,7 +83,11 @@ bool Map::isWall(int x, int y, short margin)
         return true;
     }
 
-    MapTile* mapTile = &layout[row][column];
+    MapTile* mapTile = this->getMapTile(x, y);
+
+    if (mapTile == nullptr) {
+        return false;
+    }
 
     if (mapTile->isFloor()) {
         return false;
@@ -148,29 +137,37 @@ bool Map::openDoor(int x, int y)
     }
 }
 
+MapTile* Map::getMapTile(int x, int y)
+{
+    short column = x / TILE_SIZE;
+    short row = y / TILE_SIZE;
+
+    if (row < 0 || column < 0) {
+        return nullptr;
+    }
+
+    if (row >= layout.size()) {
+        return nullptr;
+    }
+
+    if (column >= layout[row].size()) {
+        return nullptr;
+    }
+
+    return &layout[row][column];
+}
+
 bool Map::animateDoors()
 {
     for (auto& door : activeDoors) {
         door->increaseDoorOpenRatio();
+
+        if (door->isFullyOpenDoor()) {
+            activeDoors.pop_back();
+        }
     }
 
     return activeDoors.size() > 0;
-}
-
-float Map::wallThickness(int x, int y)
-{
-    short column = x / TILE_SIZE;
-    short row = y / TILE_SIZE;
-
-    return layout[row][column].isDoor() ? 0.4 : 1;
-}
-
-int Map::getTextureId(float x, float y)
-{
-    short column = x / TILE_SIZE;
-    short row = y / TILE_SIZE;
-
-    return layout[row][column].isDoor() ? 4 : 0;
 }
 
 void Map::loadMap(const char* mapName) {

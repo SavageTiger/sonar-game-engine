@@ -3,10 +3,11 @@
 #define WALL_H
 
 #include "Textures.h"
+#include "Map.h"
 
 class Wall {
 public:
-    short textureId;
+    MapTile* mapTile;
     int columnOffset;
     float hitOnMapX;
     float hitOnMapY;
@@ -16,7 +17,7 @@ public:
     int wallHeight;
     int lineOffsetFromTop;
 
-    Wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical);
+    Wall(MapTile* mapTile, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical);
     void render(Textures* textures);
 };
 

@@ -9,10 +9,10 @@ class Raycaster {
 private:
     int getLookingVerticalOrientation(int lookingDirection);
     int getLookingHorizontalOrientation(int lookingDirection);
-    int* sonarRight(Player *player, Map *map, float angle);
-    int* sonarLeft(Player *player, Map *map, float angle);
-    int* sonarUp(Player *player, Map *map, float angle);
-    int* sonarDown(Player *player, Map *map, float angle);
+    int* sonarRight(Player *player, Map* map, float angle);
+    int* sonarLeft(Player *player, Map* map, float angle);
+    int* sonarUp(Player *player, Map* map, float angle);
+    int* sonarDown(Player *player, Map* map, float angle);
     float calculateRayDistance(int playerX, int playerY, int rayHitX, int rayHitY);
     float getRadians(float degrees);
     float fixAngleOverflow(float angle);

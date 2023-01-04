@@ -3,9 +3,9 @@
 #include "Map.h"
 #include "Resolution.h"
 
-Wall::Wall(short paramTextureId, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical)
+Wall::Wall(MapTile* paramMapTile, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical)
 {
-    textureId    = paramTextureId;
+    mapTile      = paramMapTile;
     columnOffset = paramColumnOffset;
     hitOnMapX    = paramHitOnMapX;
     hitOnMapY    = paramHitOnMapY;
@@ -26,6 +26,8 @@ void Wall::render(Textures* textures) {
     float shade = this->isVertical ? .7 : 0.5;
 
     short textureX = this->tileOffset * TILE_SIZE;
+
+    short textureId = mapTile->getTextureId();
 
     for (int i = 0; i < this->wallHeight; i++) {
         short textureY = textureStepHeight * i;

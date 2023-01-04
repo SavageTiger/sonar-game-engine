@@ -24,6 +24,8 @@ public:
     void openDoor();
     void increaseDoorOpenRatio();
     float getDoorOpenRatio();
+    float thickness();
+    short getTextureId();
 };
 
 
