@@ -15,6 +15,9 @@ private:
     short resolutionHeight = MAX_RESOLUTION_HEIGHT;
 
 public:
+    void autoScale(short targetFPS, short averageFPS);
+
+
     short getResolutionWidth();
     short getResolutionHeight();
     float getPaintSize();

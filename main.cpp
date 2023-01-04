@@ -43,6 +43,11 @@ void updateFPS()
 
     char windowTitle[64];
 
+    G_RESOLUTION.autoScale(targetFPS, averageFPS);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, G_RESOLUTION.getResolutionHeight(), G_RESOLUTION.getResolutionWidth(), 0);
 
 
     sprintf(
