@@ -3,8 +3,18 @@
 #include "Map.h"
 #include "Resolution.h"
 
-Wall::Wall(MapTile* paramMapTile, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical)
-{
+Wall::Wall(
+    MapTile* paramMapTile,
+    int paramColumnOffset,
+    int paramHitOnMapX,
+    int paramHitOnMapY,
+    float paramTileOffset,
+    float paramDistance,
+    bool paramIsVertical,
+    short paramResolutionWidth,
+    short paramResolutionHeight,
+    float paramPaintSize
+) {
     mapTile      = paramMapTile;
     columnOffset = paramColumnOffset;
     hitOnMapX    = paramHitOnMapX;
@@ -13,25 +23,28 @@ Wall::Wall(MapTile* paramMapTile, int paramColumnOffset, int paramHitOnMapX, int
     distance     = paramDistance;
     isVertical   = paramIsVertical;
 
-    wallHeight        = (TILE_SIZE * RESOLUTION_HEIGHT) / distance;
-    lineOffsetFromTop = (RESOLUTION_HEIGHT / 2) - (wallHeight / 2);
+    resolutionWidth  = paramResolutionWidth;
+    resolutionHeight = paramResolutionHeight;
+    paintSize        = paramPaintSize;
+
+    wallHeight        = (TILE_SIZE * resolutionWidth) / distance;
+    lineOffsetFromTop = (resolutionHeight / 2) - (wallHeight / 2);
 }
 
 void Wall::render(Textures* textures) {
     float textureStepHeight = TILE_SIZE / (float) this->wallHeight;
 
-    glPointSize(PAINT_SIZE);
+    glPointSize(paintSize);
     glBegin(GL_POINTS);
 
     float shade = this->isVertical ? .7 : 0.5;
 
+    short textureId = mapTile->getTextureId();
     short textureX = this->tileOffset * TILE_SIZE;
 
     if (mapTile->isDoor() && mapTile->isOpenDoor()) {
         textureX += mapTile->getDoorOpenRatio() * TILE_SIZE;
     }
-
-    short textureId = mapTile->getTextureId();
 
     for (int i = 0; i < this->wallHeight; i++) {
         short textureY = textureStepHeight * i;
@@ -42,9 +55,9 @@ void Wall::render(Textures* textures) {
             textures->getTextureBFromXandY(textureId, textureX, textureY) * shade
         );
 
-        glVertex2i((columnOffset * PAINT_SIZE), i + this->lineOffsetFromTop);
+        glVertex2i(columnOffset, i + this->lineOffsetFromTop);
 
-        if (i + this->lineOffsetFromTop > RESOLUTION_HEIGHT) {
+        if (i + this->lineOffsetFromTop > resolutionHeight) {
             break;
         }
     }

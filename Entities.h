@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Wall.h"
 #include "Textures.h"
+#include "Resolution.h"
 
 struct entityProperties {
     float size;
@@ -22,7 +23,7 @@ private:
 public:
     Entities(Map *map);
 
-    void render(Player *player, Textures* textures, Wall** walls);
+    void render(Player *player, Textures* textures, Wall** walls, Resolution* resolution);
 
 };
 

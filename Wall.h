@@ -6,18 +6,36 @@
 #include "Map.h"
 
 class Wall {
-public:
+private:
     MapTile* mapTile;
+    float tileOffset;
+    bool isVertical;
+
+public:
     int columnOffset;
     float hitOnMapX;
     float hitOnMapY;
-    float tileOffset;
     float distance;
-    bool isVertical;
     int wallHeight;
     int lineOffsetFromTop;
 
-    Wall(MapTile* mapTile, int paramColumnOffset, int paramHitOnMapX, int paramHitOnMapY, float paramTileOffset, float paramDistance, bool paramIsVertical);
+    short resolutionWidth;
+    short resolutionHeight;
+    float paintSize;
+
+    Wall(
+        MapTile* paramMapTile,
+        int paramColumnOffset,
+        int paramHitOnMapX,
+        int paramHitOnMapY,
+        float paramTileOffset,
+        float paramDistance,
+        bool paramIsVertical,
+        short paramResolutionWidth,
+        short paramResolutionHeight,
+        float paramPaintSize
+    );
+
     void render(Textures* textures);
 };
 

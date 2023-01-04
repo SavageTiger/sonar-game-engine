@@ -11,6 +11,7 @@ void Entity::render(
     float distanceFromCieling,
     Player *player,
     Textures* textures,
+    Resolution* resolution,
     Wall** walls
 ) {
     float spriteDistance = sqrt(pow(*player->getX() - spriteX, 2) + pow(*player->getY() - spriteY, 2));
@@ -42,9 +43,9 @@ void Entity::render(
         return;
     }
 
-    float screenHeight = RESOLUTION_HEIGHT * TILE_SIZE;
+    float screenHeight = resolution->getResolutionHeight() * TILE_SIZE;
 
-    float objectCeiling = (RESOLUTION_HEIGHT / 2) - (screenHeight / spriteDistance / 2);
+    float objectCeiling = (resolution->getResolutionHeight() / 2) - (screenHeight / spriteDistance / 2);
     float objectFloor = objectCeiling + (screenHeight / spriteDistance / 2);
 
     float objectAspectRatio = ((float)spriteHeight / (float)spriteWidth);
@@ -52,9 +53,9 @@ void Entity::render(
     float objectHeight = (objectFloor - objectCeiling) * size;
     float objectWidth = objectHeight / objectAspectRatio;
 
-    int objectMiddle = (.5 * (objectAngle / (getRadians(FOV) / 2)) + .5) * RESOLUTION_WIDTH;
+    int objectMiddle = (.5 * (objectAngle / (getRadians(FOV) / 2)) + .5) * resolution->getResolutionWidth();
 
-    glPointSize(PAINT_SIZE * 2);
+    glPointSize(resolution->getPaintSize() * 2);
     glBegin(GL_POINTS);
 
     int renderRowOffset = (objectFloor - objectCeiling) * distanceFromCieling;
@@ -63,7 +64,7 @@ void Entity::render(
         for (int renderRow = renderRowOffset; renderRow < objectHeight + renderRowOffset; renderRow++) {
             int columnX = objectMiddle + renderColumn - (objectWidth / 2);
 
-            if (columnX <= 0 || columnX >= RESOLUTION_WIDTH) {
+            if (columnX <= 0 || columnX >= resolution->getResolutionWidth()) {
                 continue;
             }
 
@@ -86,7 +87,7 @@ void Entity::render(
 
             glColor3ub(colorR, colorG, colorB);
 
-            glVertex2i(columnX * PAINT_SIZE, objectCeiling + renderRow * PAINT_SIZE);
+            glVertex2i(columnX * resolution->getPaintSize(), objectCeiling + renderRow * resolution->getPaintSize());
         }
     }
 

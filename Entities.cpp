@@ -7,7 +7,7 @@ Entities::Entities(Map* map) {
     this->loadEntities(map);
 }
 
-void Entities::render(Player *player, Textures* textures, Wall** walls)
+void Entities::render(Player *player, Textures* textures, Wall** walls, Resolution* resolution)
 {
     for (auto& entity : entityMemory) {
         if (entity.size == 0) {
@@ -21,6 +21,7 @@ void Entities::render(Player *player, Textures* textures, Wall** walls)
             entity.distanceFromCieling,
             player,
             textures,
+            resolution,
             walls
         );
     }
@@ -29,10 +30,10 @@ void Entities::render(Player *player, Textures* textures, Wall** walls)
 void Entities::loadEntities(Map* map) {
     entityProperties gun;
 
-    gun.size = .3;
+    gun.size = .7;
     gun.tileTop = 5;
     gun.tileLeft = 2;
-    gun.distanceFromCieling = .7;
+    gun.distanceFromCieling = 0.3;
 
     entityMemory[0] = gun;
 }

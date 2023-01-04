@@ -7,7 +7,7 @@
 
 void Ceiling::render(Textures* textures, Player* player, Wall* wall)
 {
-    glPointSize(PAINT_SIZE);
+    glPointSize(wall->paintSize);
     glBegin(GL_POINTS);
 
     int playerX = *player->getX(),
@@ -16,7 +16,7 @@ void Ceiling::render(Textures* textures, Player* player, Wall* wall)
     float textureX, textureY;
     short textureXIndex, textureYIndex;
 
-    float eyeHeight = RESOLUTION_HEIGHT / 2;
+    float eyeHeight = wall->resolutionHeight / 2;
 
     float rayAngleRadian =
             -atan2((int)wall->hitOnMapY - playerY, (int)wall->hitOnMapX - playerX);
@@ -25,7 +25,7 @@ void Ceiling::render(Textures* textures, Player* player, Wall* wall)
 
     float fixFishEye = cos(rayAngleRadian + (player->getLookingDirectionInRadians()));
 
-    for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < RESOLUTION_HEIGHT; i++) {
+    for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < wall->resolutionHeight; i++) {
         float drawPointMinusEyeHeight = i - eyeHeight;
 
 
@@ -43,7 +43,7 @@ void Ceiling::render(Textures* textures, Player* player, Wall* wall)
 
         counter++;
 
-        glVertex2i((wall->columnOffset * PAINT_SIZE), wall->lineOffsetFromTop - counter);
+        glVertex2i((wall->columnOffset), wall->lineOffsetFromTop - counter);
     }
 
     glEnd();

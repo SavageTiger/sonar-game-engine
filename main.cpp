@@ -14,10 +14,15 @@
 #endif
 
 double previousFrameTime = 0.0;
+long totalFrameCount = 0;
+
 short currentFPS = 0;
-short targetFPS = 60;
+short averageFPS = 0;
+short targetFPS = 90;
+
 short gameTicksPerSecond = 60;
 
+Resolution G_RESOLUTION;
 Textures G_TEXTURES;
 Player G_PLAYER;
 Floor G_FLOOR;
@@ -34,10 +39,20 @@ void updateFPS()
     previousFrameTime = currentTime;
 
     currentFPS = (int)(1000.0 / elapsedTime);
+    averageFPS = (int)((float)totalFrameCount / (glutGet(GLUT_ELAPSED_TIME) / 1000.0));
 
     char windowTitle[64];
 
-    sprintf(windowTitle, "Sonar game engine (FPS: %d)", currentFPS);
+
+
+    sprintf(
+        windowTitle,
+        "Sonar game engine (FPS: %d [avg: %i], Resolution: %ix%i)",
+        currentFPS,
+        averageFPS,
+        G_RESOLUTION.getResolutionWidth(),
+        G_RESOLUTION.getResolutionHeight()
+    );
 
     glutSetWindowTitle(windowTitle);
 }
@@ -46,23 +61,26 @@ void renderPipeline()
 {
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+   short resolutionWidth = G_RESOLUTION.getResolutionWidth();
+
    Wall** walls = G_RAYCASTER.castRays(
        &G_PLAYER,
-       &G_MAP
+       &G_MAP,
+       &G_RESOLUTION
    );
 
    G_PLAYER.render();
 
-   for (int i = 0; i < RESOLUTION_WIDTH; i++) {
+   for (int i = 0; i < resolutionWidth; i++) {
        G_FLOOR.render(&G_TEXTURES, &G_PLAYER, walls[i]);
        G_CEILING.render(&G_TEXTURES, &G_PLAYER, walls[i]);
 
        walls[i]->render(&G_TEXTURES);
    }
 
-    G_ENTITIES.render(&G_PLAYER, &G_TEXTURES, walls);
+    G_ENTITIES.render(&G_PLAYER, &G_TEXTURES, walls, &G_RESOLUTION);
 
-    for (int i = 0; i < RESOLUTION_WIDTH; i++) {
+    for (int i = 0; i < resolutionWidth; i++) {
         delete walls[i];
     }
 
@@ -76,6 +94,8 @@ void renderFrame(int val)
     updateFPS();
 
     glutPostRedisplay();
+
+    totalFrameCount++;
 
     glutTimerFunc(1000 / targetFPS, renderFrame, 0);
 }

@@ -7,7 +7,7 @@
 
 void Floor::render(Textures* textures, Player* player, Wall* wall)
 {
-    glPointSize(PAINT_SIZE);
+    glPointSize(wall->paintSize);
     glBegin(GL_POINTS);
 
     short playerX = *player->getX(),
@@ -16,14 +16,14 @@ void Floor::render(Textures* textures, Player* player, Wall* wall)
     float textureX, textureY;
     short textureXIndex, textureYIndex;
 
-    float eyeHeight = RESOLUTION_HEIGHT / 2;
+    float eyeHeight = wall->resolutionHeight / 2;
 
     float rayAngleRadian =
             -atan2((int)wall->hitOnMapY - playerY, (int)wall->hitOnMapX - playerX);
 
     float fixFishEye = cos(rayAngleRadian + (player->getLookingDirectionInRadians()));
 
-    for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < RESOLUTION_HEIGHT; i++) {
+    for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < wall->resolutionHeight; i++) {
         float drawPointMinusEyeHeight = i - eyeHeight;
 
         textureX = playerX + cos(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
@@ -38,7 +38,7 @@ void Floor::render(Textures* textures, Player* player, Wall* wall)
             textures->getTextureBFromXandY(1, textureXIndex, textureYIndex)
         );
 
-        glVertex2i((wall->columnOffset * PAINT_SIZE), i);
+        glVertex2i((wall->columnOffset), i);
     }
 
     glEnd();

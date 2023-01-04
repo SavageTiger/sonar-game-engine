@@ -1,4 +1,5 @@
 
+#include "Resolution.h"
 #include "Map.h"
 #include "Wall.h"
 
@@ -18,7 +19,7 @@ private:
     float fixAngleOverflow(float angle);
 
 public:
-    Wall** castRays(Player* player, Map* map);
+    Wall** castRays(Player* player, Map* map, Resolution* resolution);
 
 };
 

@@ -1,10 +1,7 @@
 #include <cmath>
-#include <cstdio>
 #include "Player.h"
 #include "Raycaster.h"
-#include "Map.h"
 #include "Wall.h"
-#include "Resolution.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -18,17 +15,19 @@
 #define UP 2
 #define DOWN 3
 
-Wall** Raycaster::castRays(Player* player, Map* map)
+Wall** Raycaster::castRays(Player* player, Map* map, Resolution* resolution)
 {
-    Wall** walls = new Wall*[RESOLUTION_WIDTH];
+    short resolutionWidth = resolution->getResolutionWidth();
+
+    Wall** walls = new Wall*[resolutionWidth];
 
     float angle = fixAngleOverflow(
         *player->getLookingDirection() - (FOV / 2)
     );
 
-    float distanceToPlane = floor((RESOLUTION_WIDTH / 2) / tan(getRadians(FOV / 2)));
+    float distanceToPlane = floor((resolutionWidth / 2) / tan(getRadians(FOV / 2)));
 
-    for (int i = 0; i < RESOLUTION_WIDTH; i++) {
+    for (int i = 0; i < resolutionWidth; i++) {
         float verticalHitX = -1,
             verticalHitY = -1,
             horizontalHitX = -1,
@@ -101,7 +100,10 @@ Wall** Raycaster::castRays(Player* player, Map* map)
                 horizontalHitY,
                 tileOffset,
                 horizontalDistance,
-                false
+                false,
+                resolution->getResolutionWidth(),
+                resolution->getResolutionHeight(),
+                resolution->getPaintSize()
             );
         } else {
             // Correct the vertical fishbowl effect.
@@ -123,12 +125,15 @@ Wall** Raycaster::castRays(Player* player, Map* map)
                 verticalHitY,
                 tileOffset,
                 verticalDistance,
-                true
+                true,
+                resolution->getResolutionWidth(),
+                resolution->getResolutionHeight(),
+                resolution->getPaintSize()
             );
         }
 
         angle =
-                -(atan2(RESOLUTION_WIDTH / 2 - (i - 0.5), distanceToPlane)) * (180.f / M_PI) +
+                -(atan2(resolutionWidth / 2 - (i - 0.5), distanceToPlane)) * (180.f / M_PI) +
                 *player->getLookingDirection();
     }
 

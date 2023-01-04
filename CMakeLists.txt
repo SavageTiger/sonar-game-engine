@@ -3,7 +3,7 @@ project(sonar)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(sonar main.cpp Window.cpp Window.h Player.cpp Player.h Map.cpp Map.h Raycaster.cpp Raycaster.h Wall.cpp Wall.h Textures.cpp Textures.h Floor.cpp Floor.h Ceiling.h Ceiling.cpp Resolution.h Entity.cpp Entity.h Entities.cpp Entities.h MapTile.cpp MapTile.h)
+add_executable(sonar main.cpp Window.cpp Window.h Player.cpp Player.h Map.cpp Map.h Raycaster.cpp Raycaster.h Wall.cpp Wall.h Textures.cpp Textures.h Floor.cpp Floor.h Ceiling.h Ceiling.cpp Resolution.h Resolution.cpp Entity.cpp Entity.h Entities.cpp Entities.h MapTile.cpp MapTile.h)
 
 if (NOT APPLE)
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake-mod/")

@@ -3,9 +3,21 @@
 
 #define FOV 70
 
-#define PAINT_SIZE 2
+#define MAX_RESOLUTION_WIDTH 640;
+#define MAX_RESOLUTION_HEIGHT 640;
 
-#define RESOLUTION_WIDTH 650
-#define RESOLUTION_HEIGHT 640
+class Resolution {
+private:
+    int previousAverageFPS = 0;
+
+    float paintSize = 2;
+    short resolutionWidth = MAX_RESOLUTION_WIDTH;
+    short resolutionHeight = MAX_RESOLUTION_HEIGHT;
+
+public:
+    short getResolutionWidth();
+    short getResolutionHeight();
+    float getPaintSize();
+};
 
 #endif
