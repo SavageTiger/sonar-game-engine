@@ -16,7 +16,7 @@
 double previousFrameTime = 0.0;
 short currentFPS = 0;
 short targetFPS = 60;
-short gameTicksPerSecond = 30;
+short gameTicksPerSecond = 60;
 
 Textures G_TEXTURES;
 Player G_PLAYER;
@@ -45,8 +45,6 @@ void updateFPS()
 void renderPipeline()
 {
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-   G_MAP.loadMap("test");
 
    Wall** walls = G_RAYCASTER.castRays(
        &G_PLAYER,
@@ -91,7 +89,6 @@ void gameTick(int val)
     glutTimerFunc(1000 / gameTicksPerSecond, gameTick, 0);
 }
 
-
 void registerKeyPress(unsigned char key, int x, int y)
 {
     G_PLAYER.buttonPressed(key, true);
@@ -111,6 +108,8 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);
 
     window.renderWindow();
+
+    G_MAP.loadMap("test");
 
     // Register keyboard listeners
     glutKeyboardFunc(registerKeyPress);

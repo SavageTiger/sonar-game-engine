@@ -26,7 +26,6 @@ void Floor::render(Textures* textures, Player* player, Wall* wall)
     for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < RESOLUTION_HEIGHT; i++) {
         float drawPointMinusEyeHeight = i - eyeHeight;
 
-
         textureX = playerX + cos(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
         textureY = playerY - sin(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
 
