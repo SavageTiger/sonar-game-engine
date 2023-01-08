@@ -11,7 +11,6 @@ void Window::renderWindow() {
     glutInitWindowSize(640, 640);
     glutCreateWindow("Sonar game engine");
     glClearColor(0.5,0.5,0.5,0.0);
-    glEnable(GL_POINT_SMOOTH);
 
     return;
 }

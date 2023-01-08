@@ -18,14 +18,12 @@ void Resolution::autoScale(short targetFPS, short averageFPS)
 
     int percentage = ((float)averageFPS / (float)targetFPS) * 100;
 
-    printf("%i\r\n", percentage);
-
     resolutionHeight = originalResolution / 100 * percentage;
     resolutionWidth = originalResolution / 100 * percentage;
 
     float deltaHeight =  (float)originalResolution / (float)resolutionHeight;
 
-    paintSize = 1.5 * deltaHeight;
+    paintSize = 2.5 * deltaHeight;
 
     previousAverageFPS = averageFPS;
 }
