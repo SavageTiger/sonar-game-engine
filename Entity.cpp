@@ -2,18 +2,18 @@
 #include "Resolution.h"
 #include "math.h"
 #include <GL/gl.h>
-#include <cstdio>
 
 void Entity::render(
-    float size,
-    int spriteX,
-    int spriteY,
-    float distanceFromCieling,
+    EntityProperties* entity,
     Player *player,
     Textures* textures,
     Resolution* resolution,
     Wall** walls
 ) {
+    int
+        spriteX = (entity->tileLeft * (TILE_SIZE) - (TILE_SIZE / 2)),
+        spriteY = (entity->tileTop * (TILE_SIZE) - (TILE_SIZE / 2));
+
     float spriteDistance = sqrt(pow(*player->getX() - spriteX, 2) + pow(*player->getY() - spriteY, 2));
 
     spriteX = spriteX - *player->getX(),
@@ -50,7 +50,7 @@ void Entity::render(
 
     float objectAspectRatio = ((float)spriteHeight / (float)spriteWidth);
 
-    float objectHeight = (objectFloor - objectCeiling) * size;
+    float objectHeight = (objectFloor - objectCeiling) * entity->size;
     float objectWidth = objectHeight / objectAspectRatio;
 
     int objectMiddle = (.5 * (objectAngle / (getRadians(FOV) / 2)) + .5) * resolution->getResolutionWidth();
@@ -58,7 +58,7 @@ void Entity::render(
     glPointSize(resolution->getPaintSize() * 2);
     glBegin(GL_POINTS);
 
-    int renderRowOffset = (objectFloor - objectCeiling) * distanceFromCieling;
+    int renderRowOffset = (objectFloor - objectCeiling) * entity->distanceFromCeiling;
 
     for (int renderColumn = 0; renderColumn < objectWidth; renderColumn++) {
         for (int renderRow = renderRowOffset; renderRow < objectHeight + renderRowOffset; renderRow++) {
@@ -77,9 +77,9 @@ void Entity::render(
                 textureY = (spriteHeight / objectHeight) * (renderRow - renderRowOffset);
 
             int
-                colorR = textures->getTextureRFromXandY(3, textureX, textureY),
-                colorG = textures->getTextureGFromXandY(3, textureX, textureY),
-                colorB = textures->getTextureBFromXandY(3, textureX, textureY);
+                colorR = textures->getTextureRFromXandY(entity->textureId, textureX, textureY),
+                colorG = textures->getTextureGFromXandY(entity->textureId, textureX, textureY),
+                colorB = textures->getTextureBFromXandY(entity->textureId, textureX, textureY);
 
             if (colorR == 255 && colorG == 0 && colorB == 255) {
                 continue;

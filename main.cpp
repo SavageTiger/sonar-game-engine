@@ -18,7 +18,7 @@ long totalFrameCount = 0;
 
 short currentFPS = 0;
 short averageFPS = 0;
-short targetFPS = 90;
+short targetFPS = 60;
 
 short gameTicksPerSecond = 60;
 

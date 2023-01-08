@@ -1,6 +1,7 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
+#include "Entities.h"
 #include "Resolution.h"
 #include "Player.h"
 #include "Wall.h"
@@ -11,10 +12,7 @@ private:
 
 public:
     void render(
-        float size,
-        int spriteX,
-        int spriteY,
-        float distanceFromCieling,
+        EntityProperties* entity,
         Player *player,
         Textures* textures,
         Resolution* resolution,

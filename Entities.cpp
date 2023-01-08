@@ -15,10 +15,7 @@ void Entities::render(Player *player, Textures* textures, Wall** walls, Resoluti
         }
 
         G_ENTITY.render(
-            entity.size,
-            (entity.tileLeft * (TILE_SIZE) - (TILE_SIZE / 2)),
-            (entity.tileTop * (TILE_SIZE) - (TILE_SIZE / 2)),
-            entity.distanceFromCieling,
+            &entity,
             player,
             textures,
             resolution,
@@ -28,12 +25,23 @@ void Entities::render(Player *player, Textures* textures, Wall** walls, Resoluti
 }
 
 void Entities::loadEntities(Map* map) {
-    entityProperties gun;
+    EntityProperties gun;
+    EntityProperties soldier;
 
     gun.size = .7;
+    gun.textureId = 3;
     gun.tileTop = 5;
     gun.tileLeft = 2;
-    gun.distanceFromCieling = 0.3;
+    gun.distanceFromCeiling = 0.3;
+    gun.type = ENTITY_TYPE_WEAPON;
+
+    soldier.size = .7;
+    soldier.textureId = 3;
+    soldier.tileTop = 2;
+    soldier.tileLeft = 2;
+    soldier.distanceFromCeiling = 0.3;
+    soldier.type = ENTITY_TYPE_ENEMY;
 
     entityMemory[0] = gun;
+    entityMemory[1] = soldier;
 }

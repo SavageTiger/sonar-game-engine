@@ -6,17 +6,22 @@
 #include "Textures.h"
 #include "Resolution.h"
 
-struct entityProperties {
+#define ENTITY_TYPE_WEAPON 0;
+#define ENTITY_TYPE_ENEMY 1;
+
+struct EntityProperties {
     float size;
+    short textureId;
     int tileTop;
     int tileLeft;
-    float distanceFromCieling;
+    float distanceFromCeiling;
+    short type;
 };
 
 class Entities {
 
 private:
-    entityProperties entityMemory[128];
+    EntityProperties entityMemory[128];
 
     void loadEntities(Map* map);
 
