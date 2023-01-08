@@ -1,0 +1,17 @@
+<settings>
+    <walls>
+        <texture-id>1</texture-id>
+        <texture-id>4</texture-id>
+    </walls>
+    <doors>
+        <texture-id>3</texture-id>
+    </doors>
+    <textures>
+        <texture id="0">textures/floor.png</texture>
+        <texture id="1">textures/box.png</texture>
+        <texture id="2">textures/ceiling.png</texture>
+        <texture id="3">textures/door.png</texture>
+        <texture id="4">textures/wall.png</texture>
+        <texture id="5">textures/ceiling-2.png</texture>
+    </textures>
+</settings>
