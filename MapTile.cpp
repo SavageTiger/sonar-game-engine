@@ -1,9 +1,12 @@
 #include "MapTile.h"
-#include <thread>
 
-MapTile::MapTile(short paramTileType)
+MapTile::MapTile(short paramTileType, short paramTileTextureId, short paramFloorTextureId, short paramCeilingTextureId, float paramThickness)
 {
     tileType = paramTileType;
+    wallTextureId = paramTileTextureId;
+    floorTextureId = paramFloorTextureId;
+    ceilingTextureId = paramCeilingTextureId;
+    thickness = paramThickness;
     doorOpen = false;
 }
 
@@ -50,12 +53,22 @@ float MapTile::getDoorOpenRatio()
     return doorOpenRatio;
 }
 
-float MapTile::thickness()
+float MapTile::getThickness()
 {
-    return this->isDoor() ? 0.4 : 1;
+    return this->thickness;
 }
 
-short MapTile::getTextureId()
+short MapTile::getWallTextureId()
 {
-    return this->isDoor() ? 4 : 0;
+    return this->wallTextureId;
+}
+
+short MapTile::getFloorTextureId()
+{
+    return this->floorTextureId;
+}
+
+short MapTile::getCeilingTextureId()
+{
+    return this->ceilingTextureId;
 }

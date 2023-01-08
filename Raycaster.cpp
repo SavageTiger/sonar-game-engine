@@ -157,8 +157,8 @@ int* Raycaster::sonarRight(Player* player, Map* map, float angle)
         MapTile* mapTile = map->getMapTile(x + 1, y);
 
         if (mapTile != nullptr && (mapTile->isWall() || mapTile->isDoor())) {
-            if (mapTile->thickness() != 1) {
-                float adjustment = (TILE_SIZE * mapTile->thickness());
+            if (mapTile->getThickness() != 1) {
+                float adjustment = (TILE_SIZE * mapTile->getThickness());
 
                 y = ((*player->getY()) + ((nextTile * TILE_SIZE + adjustment) - *player->getX()) * tanValue);
                 x += adjustment;
@@ -202,8 +202,8 @@ int* Raycaster::sonarLeft(Player* player, Map* map, float angle)
         MapTile* mapTile = map->getMapTile(x - 1, y);
 
         if (mapTile != nullptr && (mapTile->isWall() || mapTile->isDoor())) {
-            if (mapTile->thickness() != 1) {
-                float adjustment = (TILE_SIZE * mapTile->thickness());
+            if (mapTile->getThickness() != 1) {
+                float adjustment = (TILE_SIZE * mapTile->getThickness());
 
                 y = ((*player->getY()) + ((previousTile * TILE_SIZE - adjustment) - *player->getX()) * tanValue);
                 x -= adjustment;
@@ -246,8 +246,8 @@ int* Raycaster::sonarUp(Player* player, Map* map, float angle)
         MapTile* mapTile = map->getMapTile(x, y - 1);
 
         if (mapTile != nullptr && (mapTile->isWall() || mapTile->isDoor())) {
-            if (mapTile->thickness() != 1) {
-                float adjustment = (TILE_SIZE * mapTile->thickness());
+            if (mapTile->getThickness() != 1) {
+                float adjustment = (TILE_SIZE * mapTile->getThickness());
 
                 y -= adjustment;
                 x = (*player->getX() - (((previousTile * TILE_SIZE - adjustment) - *player->getY()) * tanValue));
@@ -290,8 +290,8 @@ int* Raycaster::sonarDown(Player* player, Map* map, float angle)
         MapTile* mapTile = map->getMapTile(x, y + 1);
 
         if (mapTile != nullptr && (mapTile->isWall() || mapTile->isDoor())) {
-            if (mapTile->thickness() != 1) {
-                float adjustment = (TILE_SIZE * mapTile->thickness());
+            if (mapTile->getThickness() != 1) {
+                float adjustment = (TILE_SIZE * mapTile->getThickness());
 
                 y += adjustment;
                 x = ((*player->getX()) - (((nextTile * TILE_SIZE + adjustment) - *player->getY()) * tanValue));

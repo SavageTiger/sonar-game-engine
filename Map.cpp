@@ -1,76 +1,39 @@
 #include <cstdlib>
 #include <algorithm>
 #include <cstdio>
+#include <arpa/inet.h>
 #include "Map.h"
 #include "Textures.h"
+#include <GL/gl.h>
 
-/*void Map::renderWall(int row, int column, Textures* textures) {
+void Map::renderTiles(Textures* textures)
+{
     glEnable(GL_TEXTURE_2D);
 
-    textures->loadTexture(0);
+    for (int row = 0; row < layout.size(); row++) {
+        for (int column = 0; column < layout[row].size(); column++) {
+            MapTile tile = layout[row][column];
 
-    int x = column * TILE_SIZE;
-    int y = row * TILE_SIZE;
+            textures->prepTexture(tile.getWallTextureId());
 
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 0);
-    glVertex2i(x, y);
-    glTexCoord2f(1, 0);
-    glVertex2i(x + TILE_SIZE, y);
-    glTexCoord2f(1, 1);
-    glVertex2i(x + TILE_SIZE, y + TILE_SIZE);
-    glTexCoord2f(0, 1);
-    glVertex2i(x, y + TILE_SIZE);
-    glEnd();
+            int x = column * TILE_SIZE;
+            int y = row * TILE_SIZE;
 
-    glDisable(GL_TEXTURE_2D);
-}
-
-void Map::renderFloor(int row, int column, Textures* textures) {
-    glEnable(GL_TEXTURE_2D);
-
-    textures->loadTexture(1);
-
-    int x = column * TILE_SIZE;
-    int y = row * TILE_SIZE;
-
-    //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    glBegin(GL_QUADS);
-    glTexCoord2i(0, 0);
-    glVertex2i(x, y);
-    glTexCoord2i(1, 0);
-    glVertex2i(x + TILE_SIZE, y);
-    glTexCoord2i(1, 1);
-    glVertex2i(x + TILE_SIZE, y + TILE_SIZE);
-    glTexCoord2i(0, 1);
-    glVertex2i(x, y + TILE_SIZE);
-    glEnd();
-
-    glDisable(GL_TEXTURE_2D);
-}
-
-void Map::renderMap(const char* mapName, Textures* textures) {
-    if (mapLoaded == false) {
-        Map::loadMap(mapName);
-
-        mapLoaded = true;
-    }
-
-    for (int r = 0; r < layout.size(); r++) {
-        for (int c = 0; c < layout[r].size(); c++) {
-            switch (layout[r][c]) {
-                case 48:
-                    Map::renderFloor(r, c, textures);
-                    break;
-
-                case 49:
-                case 50:
-                    Map::renderWall(r, c, textures);
-                    break;
-            }
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 0);
+            glVertex2i(x, y);
+            glTexCoord2f(1, 0);
+            glVertex2i(x + TILE_SIZE, y);
+            glTexCoord2f(1, 1);
+            glVertex2i(x + TILE_SIZE, y + TILE_SIZE);
+            glTexCoord2f(0, 1);
+            glVertex2i(x, y + TILE_SIZE);
+            glEnd();
         }
     }
-}*/
+
+    glDisable(GL_TEXTURE_2D);
+}
 
 bool Map::isWall(int x, int y, short margin)
 {
@@ -100,7 +63,7 @@ bool Map::isWall(int x, int y, short margin)
     return true;
 }
 
-bool Map::openDoor(int x, int y)
+void Map::openDoor(int x, int y)
 {
     short column = x / TILE_SIZE;
     short row = y / TILE_SIZE;
@@ -170,43 +133,123 @@ bool Map::animateDoors()
     return activeDoors.size() > 0;
 }
 
-void Map::loadMap(const char* mapName) {
-    char fileChar;
+void Map::loadMap(const char* mapName, Textures* textures) {
+    bool bigEndian = (htonl(47) == 47);
     char mapPath[128] = {0};
 
     short row = 0;
-    short column = 0;
 
-    snprintf(mapPath, 128, "./maps/%s.map", mapName);
+    snprintf(mapPath, 128, "./assets/maps/%s.sgm", mapName);
 
     FILE *file = fopen(mapPath, "r");
 
     if (file == nullptr) {
-        printf("Unable to read map %s.map", mapName);
+        printf("Unable to read map %s.sgm", mapName);
 
         exit(1);
     }
 
-    do {
-        fileChar = fgetc(file);
+    fseek(file, 0, SEEK_END);
+    long fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
 
-        if (row >= layout.size()) {
-            layout.push_back({});
+    char *buffer = new char[fileSize];
+    fread(buffer, 1, fileSize, file);
+
+    if ((buffer[0] == 'S' && buffer[1] == 'G' && buffer[2] == 'M' && buffer[3] == 'V' && buffer[4] == '1') == false) {
+        printf("Unable to read map wrong file magic (SGMV1 expected)");
+
+        exit(1);
+    }
+
+    unsigned char MapTileBlockSizeByte1 = buffer[5];
+    unsigned char MapTileBlockSizeByte2 = buffer[6];
+    unsigned char MapTileBlockSizeByte3 = buffer[7];
+    unsigned char MapTileBlockSizeByte4 = buffer[8];
+
+    unsigned long mapTileBlockSize = (MapTileBlockSizeByte1 << 24) | (MapTileBlockSizeByte2 << 16) | (MapTileBlockSizeByte3 << 8) | MapTileBlockSizeByte4;
+    unsigned long textureTableBlockSize = (buffer[mapTileBlockSize + 9] << 24) | (buffer[mapTileBlockSize + 10] << 16) | (buffer[mapTileBlockSize + 11] << 8) | buffer[mapTileBlockSize + 12];
+
+    layout.push_back({});
+
+    /**
+     * Load map tiles
+     */
+    for (long i = 9; i < mapTileBlockSize; i += 10) {
+        signed short tileType;
+        unsigned short wallTextureId, floorTextureId, ceilingTextureId;
+        unsigned short wallThickness;
+
+        if (bigEndian == false) {
+            swapEndianness(&buffer[i], 2); // tileType
+            swapEndianness(&buffer[i + 2], 2); // wallTextureId
+            swapEndianness(&buffer[i + 4], 2); // floorTextureId
+            swapEndianness(&buffer[i + 6], 2); // ceilingTextureId
+            swapEndianness(&buffer[i + 8], 2); // getThickness
         }
 
-        if (fileChar == 49 || fileChar == 48 || fileChar == 50) {
-            MapTile mapTile = MapTile(atoi(&fileChar));
+        memcpy(&tileType, buffer + i, 2);
+        memcpy(&wallTextureId, buffer + i + 2, 2);
+        memcpy(&floorTextureId, buffer + i + 4, 2);
+        memcpy(&ceilingTextureId, buffer + i + 6, 2);
+        memcpy(&wallThickness, buffer + i + 8, 2);
 
-            layout[row].push_back(mapTile);
-
-            column++;
-        }
-
-        if (fileChar == 10) {
-            column = 0;
-
+        if (tileType == 0) {
             row++;
+
+            layout.push_back({});
+
+            continue;
         }
-    } while (fileChar != EOF);
+
+        MapTile mapTile = MapTile(
+            tileType,
+            wallTextureId,
+            floorTextureId,
+            ceilingTextureId,
+            (float)wallThickness / 100
+        );
+
+        layout[row].push_back(mapTile);
+    }
+
+
+    /**
+     * Load map textures
+     */
+    textures->reset();
+
+    int textureId = 0;
+
+    for (long i = mapTileBlockSize + 13; i < mapTileBlockSize + textureTableBlockSize + 13;) {
+        int textureFilenameLength = (buffer[i] << 8) | buffer[i + 1];
+        char textureFilename[textureFilenameLength];
+
+        i += 2;
+
+        for (short b = 0; b < textureFilenameLength; b++) {
+            textureFilename[b] = buffer[i + b];
+        }
+        textureFilename[textureFilenameLength] = 0x00;
+
+        i += textureFilenameLength;
+
+        textures->loadTexture(textureId, textureFilename);
+
+        textureId++;
+    }
+
+    delete buffer;
+
+    fclose(file);
 }
 
+void Map::swapEndianness(char* data, size_t size)
+{
+    for (size_t i = 0; i < size / 2; i++) {
+        char buffer = data[i];
+
+        data[i] = data[size - i - 1];
+        data[size - i - 1] = buffer;
+    }
+}

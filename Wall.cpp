@@ -1,7 +1,6 @@
 #include <GL/gl.h>
 #include "Wall.h"
 #include "Map.h"
-#include "Resolution.h"
 
 Wall::Wall(
     MapTile* paramMapTile,
@@ -39,7 +38,7 @@ void Wall::render(Textures* textures) {
 
     float shade = this->isVertical ? .7 : 0.5;
 
-    short textureId = mapTile->getTextureId();
+    short textureId = mapTile->getWallTextureId();
     short textureX = this->tileOffset * TILE_SIZE;
 
     if (mapTile->isDoor() && mapTile->isOpenDoor()) {

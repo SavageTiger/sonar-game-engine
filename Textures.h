@@ -6,15 +6,18 @@
 
 class Textures {
 private:
-    SDL_Surface* textureMemory[64];
-    void loadTextureFromDisk(short textureId);
+    SDL_Surface* textureMemory[1024];
     short getTextureValueFromXandY(short textureId, short x, short y, short channel);
 
     int textureHeight[64];
     int textureWidth[64];
 
 public:
-    void loadTexture(short textureId);
+    void reset();
+    void loadTexture(short textureId, char* filename);
+
+    // TODO: Remove this when debugging is removed
+    void prepTexture(short textureId);
 
     short getTextureRFromXandY(short textureId, short x, short y);
     short getTextureGFromXandY(short textureId, short x, short y);

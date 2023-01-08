@@ -5,15 +5,19 @@
 class MapTile {
 private:
     short tileType;
+    short wallTextureId;
+    short floorTextureId;
+    short ceilingTextureId;
+    float thickness;
     bool doorOpen;
     double doorOpenRatio;
 
 public:
-    const short TILE_TYPE_FLOOR = 0;
-    const short TILE_TYPE_WALL = 1;
-    const short TILE_TYPE_DOOR = 2;
+    const short TILE_TYPE_FLOOR = 1;
+    const short TILE_TYPE_WALL = 2;
+    const short TILE_TYPE_DOOR = 3;
 
-    MapTile(short paramTileType);
+    MapTile(short paramTileType, short paramTileTextureId, short paramFloorTextureId, short ceilingTextureId, float thickness);
 
     bool isFloor();
     bool isWall();
@@ -24,8 +28,10 @@ public:
     void openDoor();
     void increaseDoorOpenRatio();
     float getDoorOpenRatio();
-    float thickness();
-    short getTextureId();
+    float getThickness();
+    short getWallTextureId();
+    short getFloorTextureId();
+    short getCeilingTextureId();
 };
 
 

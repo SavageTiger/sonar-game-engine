@@ -74,11 +74,13 @@ void renderPipeline()
        &G_RESOLUTION
    );
 
+   // For debugging
    G_PLAYER.render();
+   G_MAP.renderTiles(&G_TEXTURES);
 
    for (int i = 0; i < resolutionWidth; i++) {
-       G_FLOOR.render(&G_TEXTURES, &G_PLAYER, walls[i]);
-       G_CEILING.render(&G_TEXTURES, &G_PLAYER, walls[i]);
+       G_FLOOR.render(&G_TEXTURES, &G_PLAYER, walls[i], &G_MAP);
+       G_CEILING.render(&G_TEXTURES, &G_PLAYER, walls[i], &G_MAP);
 
        walls[i]->render(&G_TEXTURES);
    }
@@ -149,7 +151,7 @@ int main(int argc, char* argv[])
     Window window;
     window.renderWindow();
 
-    G_MAP.loadMap("test");
+    G_MAP.loadMap("test", &G_TEXTURES);
 
     // Register keyboard listeners
     glutKeyboardFunc(registerKeyPress);

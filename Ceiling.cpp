@@ -5,7 +5,7 @@
 #include "Map.h"
 #include <cmath>
 
-void Ceiling::render(Textures* textures, Player* player, Wall* wall)
+void Ceiling::render(Textures* textures, Player* player, Wall* wall, Map* map)
 {
     glPointSize(wall->paintSize);
     glBegin(GL_POINTS);
@@ -28,17 +28,18 @@ void Ceiling::render(Textures* textures, Player* player, Wall* wall)
     for (int i = wall->lineOffsetFromTop + wall->wallHeight; i < wall->resolutionHeight; i++) {
         float drawPointMinusEyeHeight = i - eyeHeight;
 
-
         textureX = playerX + cos(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
         textureY = playerY - sin(rayAngleRadian) * eyeHeight * TILE_SIZE / drawPointMinusEyeHeight / fixFishEye;
 
         textureXIndex = (int)textureX & (TILE_SIZE - 1);
         textureYIndex = (int)textureY & (TILE_SIZE - 1);
 
+        short textureId = map->getMapTile(textureX, textureY)->getCeilingTextureId();
+
         glColor3ub(
-            textures->getTextureRFromXandY(2, textureXIndex, textureYIndex),
-            textures->getTextureGFromXandY(2, textureXIndex, textureYIndex),
-            textures->getTextureBFromXandY(2, textureXIndex, textureYIndex)
+            textures->getTextureRFromXandY(textureId, textureXIndex, textureYIndex),
+            textures->getTextureGFromXandY(textureId, textureXIndex, textureYIndex),
+            textures->getTextureBFromXandY(textureId, textureXIndex, textureYIndex)
         );
 
         counter++;

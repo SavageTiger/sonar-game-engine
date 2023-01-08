@@ -7,7 +7,7 @@
 
 class Ceiling {
 public:
-    static void render(Textures *textures, Player *player, Wall *wall);
+    static void render(Textures *textures, Player *player, Wall *wall, Map* map);
 };
 
 #endif

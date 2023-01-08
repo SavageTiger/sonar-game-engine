@@ -7,10 +7,8 @@
 #include <GL/gl.h>
 #endif
 
-void Textures::loadTexture(short textureId)
+void Textures::prepTexture(short textureId)
 {
-    this->loadTextureFromDisk(textureId);
-
     // TODO: REMOVE ME; no longer required when the debug map is gone.
     glColor4f(1,1,1,0);
 
@@ -49,42 +47,43 @@ short Textures::getTextureBFromXandY(short textureId, short x, short y)
 
 int Textures::getTextureHeight(short textureId)
 {
-    this->loadTextureFromDisk(textureId);
-
     return textureHeight[textureId];
 }
 
 int Textures::getTextureWidth(short textureId)
 {
-    this->loadTextureFromDisk(textureId);
-
     return textureWidth[textureId];
 }
 
 short Textures::getTextureValueFromXandY(short textureId, short x, short y, short channel)
 {
-    this->loadTextureFromDisk(textureId);
-
     Uint8* pixel = (Uint8*)textureMemory[textureId]->pixels + y * textureMemory[textureId]->pitch + x * 3;
 
     return pixel[channel];
 }
 
-void Textures::loadTextureFromDisk(short textureId)
-{
-    if (textureMemory[textureId] == nullptr) {
-        char* textures [5] = {
-            "maps/box.png",
-            "maps/floor.png",
-            "maps/ceiling.png",
-            "sprites/gun.png",
-            "maps/door.png",
-        };
+void Textures::reset() {
+    for (auto& texture : textureMemory) {
+        delete texture;
 
-        SDL_Surface* originalSurface = IMG_Load(textures[textureId]);
+        texture = nullptr;
+    }
+
+}
+
+void Textures::loadTexture(short textureId, char* filename)
+{
+    printf("%i", textureId);
+
+    if (textureMemory[textureId] == nullptr) {
+        char filenameWithPath[strlen(filename) + strlen("assets/")];
+
+        sprintf(filenameWithPath, "%s/%s", "assets/", filename);
+
+        SDL_Surface* originalSurface = IMG_Load(filenameWithPath);
 
         if (originalSurface == nullptr) {
-            printf("Unable to load textures '%s'", textures[textureId]);
+            printf("Unable to load textures '%s'", filenameWithPath);
 
             exit(1);
         }

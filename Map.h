@@ -14,15 +14,16 @@ private:
     std::vector<std::vector<MapTile>> layout;
     std::vector<MapTile*> activeDoors;
 
-    static void renderFloor(int row, int column, Textures* textures);
-    void renderWall(int row, int column, Textures* textures);
+    void swapEndianness(char* data, size_t size);
 
 public:
-    void loadMap(const char* mapName);
+    void loadMap(const char* mapName, Textures* textures);
     bool isWall(int x, int y, short margin = 0);
     MapTile* getMapTile(int x, int y);
-    bool openDoor(int x, int y);
+    void openDoor(int x, int y);
     bool animateDoors();
 
+    // FOR DEBUGGING
+    void renderTiles(Textures* textures);
 };
 #endif

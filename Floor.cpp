@@ -1,11 +1,10 @@
 #include <GL/gl.h>
 #include "Floor.h"
-#include "Resolution.h"
 #include "Textures.h"
 #include "Map.h"
 #include <cmath>
 
-void Floor::render(Textures* textures, Player* player, Wall* wall)
+void Floor::render(Textures* textures, Player* player, Wall* wall, Map* map)
 {
     glPointSize(wall->paintSize);
     glBegin(GL_POINTS);
@@ -32,10 +31,12 @@ void Floor::render(Textures* textures, Player* player, Wall* wall)
         textureXIndex = (int)textureX & (TILE_SIZE - 1);
         textureYIndex = (int)textureY & (TILE_SIZE - 1);
 
+        short textureId = map->getMapTile(textureX, textureY)->getFloorTextureId();
+
         glColor3ub(
-            textures->getTextureRFromXandY(1, textureXIndex, textureYIndex),
-            textures->getTextureGFromXandY(1, textureXIndex, textureYIndex),
-            textures->getTextureBFromXandY(1, textureXIndex, textureYIndex)
+            textures->getTextureRFromXandY(textureId, textureXIndex, textureYIndex),
+            textures->getTextureGFromXandY(textureId, textureXIndex, textureYIndex),
+            textures->getTextureBFromXandY(textureId, textureXIndex, textureYIndex)
         );
 
         glVertex2i((wall->columnOffset), i);
