@@ -68,7 +68,7 @@ void Entity::render(
                 continue;
             }
 
-            if (walls[columnX]->distance < spriteDistance && (spriteDistance - walls[columnX]->distance) > 100) {
+            if (walls[columnX]->distance < spriteDistance && (spriteDistance - walls[columnX]->distance) > 50) {
                 continue;
             }
 
@@ -87,7 +87,7 @@ void Entity::render(
 
             glColor3ub(colorR, colorG, colorB);
 
-            glVertex2i(columnX * resolution->getPaintSize(), objectCeiling + renderRow * resolution->getPaintSize());
+            glVertex2i(columnX, objectCeiling + renderRow);
         }
     }
 

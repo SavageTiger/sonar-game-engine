@@ -12,8 +12,8 @@
 struct EntityProperties {
     float size;
     short textureId;
-    int tileTop;
-    int tileLeft;
+    short tileTop;
+    short tileLeft;
     float distanceFromCeiling;
     short type;
 };
